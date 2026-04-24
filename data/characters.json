@@ -458,5 +458,10 @@
     "id": "char_1777007951688",
     "name": "팔라누스",
     "imageUrl": "https://raw.githubusercontent.com/ohorigi/project-sena/main/data/images/char_1777007949956.jpg?t=1777007951688"
+  },
+  {
+    "id": "char_1777007967691",
+    "name": "풍연",
+    "imageUrl": "https://raw.githubusercontent.com/ohorigi/project-sena/main/data/images/char_1777007965943.jpg?t=1777007967691"
   }
 ]
