@@ -288,5 +288,10 @@
     "id": "char_1777007448333",
     "name": "엘리스",
     "imageUrl": "https://raw.githubusercontent.com/ohorigi/project-sena/main/data/images/char_1777007446651.jpg?t=1777007448333"
+  },
+  {
+    "id": "char_1777007478503",
+    "name": "엘리시아",
+    "imageUrl": "https://raw.githubusercontent.com/ohorigi/project-sena/main/data/images/char_1777007476629.jpg?t=1777007478503"
   }
 ]
