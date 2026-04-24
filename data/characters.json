@@ -443,5 +443,10 @@
     "id": "char_1777007904698",
     "name": "타카",
     "imageUrl": "https://raw.githubusercontent.com/ohorigi/project-sena/main/data/images/char_1777007902888.jpg?t=1777007904698"
+  },
+  {
+    "id": "char_1777007915281",
+    "name": "태오",
+    "imageUrl": "https://raw.githubusercontent.com/ohorigi/project-sena/main/data/images/char_1777007913734.jpg?t=1777007915281"
   }
 ]
