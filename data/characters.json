@@ -233,5 +233,10 @@
     "id": "char_1777006448134",
     "name": "스파이크",
     "imageUrl": "https://raw.githubusercontent.com/ohorigi/project-sena/main/data/images/char_1777006446109.jpg?t=1777006448134"
+  },
+  {
+    "id": "char_1777006460991",
+    "name": "실베스타",
+    "imageUrl": "https://raw.githubusercontent.com/ohorigi/project-sena/main/data/images/char_1777006459381.jpg?t=1777006460991"
   }
 ]
