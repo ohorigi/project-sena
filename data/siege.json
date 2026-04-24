@@ -29,7 +29,7 @@
   "tuesday": {
     "headerImageUrl": "https://raw.githubusercontent.com/ohorigi/project-sena/main/data/images/header_tuesday_1777017952473.jpg?t=1777017954227",
     "topImageUrl": null,
-    "memo": "비스킷1 오공2 비스킷2 리나2 오공1 미호1 미호2 오공2 오공1\n",
+    "memo": "비스킷1 오공2 비스킷2 리나2 오공1 미호1 미호2 오공2 오공1\n비스킷2 비스킷1 ",
     "slots": [
       {
         "charId": "char_1777006207139",
