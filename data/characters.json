@@ -203,5 +203,10 @@
     "id": "char_1777006103774",
     "name": "세인",
     "imageUrl": "https://raw.githubusercontent.com/ohorigi/project-sena/main/data/images/char_1777006101779.jpg?t=1777006103774"
+  },
+  {
+    "id": "char_1777006139350",
+    "name": "소교",
+    "imageUrl": "https://raw.githubusercontent.com/ohorigi/project-sena/main/data/images/char_1777006137456.jpg?t=1777006139350"
   }
 ]
