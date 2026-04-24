@@ -659,7 +659,7 @@
   /* 요일 배너 이미지 (슬롯 목록 위) */
   .day-banner-img {
     width: 100%;
-    height: 100px;
+    min-height: 60px;
     border-radius: 6px;
     border: 1px dashed var(--border);
     overflow: hidden;
@@ -674,10 +674,10 @@
   }
   .day-banner-img:hover { border-color: var(--gold); }
   .day-banner-img img {
-    width: 100%; height: 100%;
-    object-fit: cover;
-    object-position: center center;
+    width: 100%;
+    height: auto;        /* 이미지 비율에 맞게 자동 높이 */
     display: block;
+    object-fit: contain; /* 이미지 전체가 보이도록 */
   }
   .banner-plus-hint {
     font-size: 15px;
@@ -686,6 +686,7 @@
     align-items: center;
     gap: 6px;
     letter-spacing: 1px;
+    padding: 20px 0;
   }
   .banner-plus-hint span { font-size: 12px; }
 
@@ -1109,6 +1110,7 @@
 <div class="modal-bg" id="picker-modal-bg">
   <div class="modal">
     <h3>캐릭터 선택</h3>
+    <input type="text" id="picker-search" placeholder="🔍 캐릭터 이름 검색..." oninput="filterPickerChars()" style="margin-bottom:10px;">
     <div class="char-picker-grid" id="char-picker-grid"></div>
     <div class="modal-btns">
       <button class="modal-btn cancel" onclick="closePickerModal()">취소</button>
@@ -1756,29 +1758,16 @@ function handleBossBannerUpload(event) {
   event.target.value = '';
 }
 
-// 보스 전용 피커
 function openBossPickerModal(slotIdx) {
   pickerTargetSlot = slotIdx;
   pickerSelectedCharId = getBossRoundData().slots[slotIdx].charId;
-  const grid = document.getElementById('char-picker-grid');
-  grid.innerHTML = '';
+  document.getElementById('picker-search').value = '';
   if (characters.length === 0) {
-    grid.innerHTML = '<div style="color:var(--text-dim);font-size:13px;text-align:center;grid-column:1/-1;padding:20px;">등록된 캐릭터가 없습니다.</div>';
+    document.getElementById('char-picker-grid').innerHTML =
+      '<div style="color:var(--text-dim);font-size:13px;text-align:center;grid-column:1/-1;padding:20px;">등록된 캐릭터가 없습니다.</div>';
   } else {
-    characters.forEach(char => {
-      const card = document.createElement('div');
-      card.className = 'picker-card' + (char.id === pickerSelectedCharId ? ' selected' : '');
-      const imgSrc = char.imageUrl || '';
-      card.innerHTML = `<img src="${imgSrc}" alt="${char.name}"><div class="picker-name">${char.name}</div>`;
-      card.onclick = () => {
-        document.querySelectorAll('.picker-card').forEach(c => c.classList.remove('selected'));
-        card.classList.add('selected');
-        pickerSelectedCharId = char.id;
-      };
-      grid.appendChild(card);
-    });
+    buildPickerCards(characters);
   }
-  // 확인 버튼을 보스용으로 교체
   document.querySelector('#picker-modal-bg .modal-btn.confirm').onclick = confirmBossPickerSelection;
   document.getElementById('picker-modal-bg').classList.add('active');
 }
@@ -2109,27 +2098,45 @@ function debounceSave() {
   saveTimer = setTimeout(() => saveSiegeData(), 1500);
 }
 
+// ===== CHARACTER PICKER MODAL =====
+function buildPickerCards(filteredChars) {
+  const grid = document.getElementById('char-picker-grid');
+  grid.innerHTML = '';
+  if (filteredChars.length === 0) {
+    grid.innerHTML = '<div style="color:var(--text-dim);font-size:13px;text-align:center;grid-column:1/-1;padding:20px;">검색 결과가 없습니다.</div>';
+    return;
+  }
+  filteredChars.forEach(char => {
+    const card = document.createElement('div');
+    card.className = 'picker-card' + (char.id === pickerSelectedCharId ? ' selected' : '');
+    const imgSrc = char.imageUrl || char.imageData || '';
+    card.innerHTML = `<img src="${imgSrc}" alt="${char.name}"><div class="picker-name">${char.name}</div>`;
+    card.onclick = () => {
+      document.querySelectorAll('.picker-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      pickerSelectedCharId = char.id;
+    };
+    grid.appendChild(card);
+  });
+}
+
+function filterPickerChars() {
+  const query = document.getElementById('picker-search').value.trim().toLowerCase();
+  const filtered = characters.filter(c => c.name.toLowerCase().includes(query));
+  buildPickerCards(filtered);
+}
+
 function openPickerModal(slotIdx) {
   pickerTargetSlot = slotIdx;
   pickerSelectedCharId = siegeData[currentDay].slots[slotIdx].charId;
-  const grid = document.getElementById('char-picker-grid');
-  grid.innerHTML = '';
+  document.getElementById('picker-search').value = '';
   if (characters.length === 0) {
-    grid.innerHTML = '<div style="color:var(--text-dim);font-size:13px;text-align:center;grid-column:1/-1;padding:20px;">등록된 캐릭터가 없습니다.<br>먼저 캐릭터를 추가해주세요.</div>';
+    document.getElementById('char-picker-grid').innerHTML =
+      '<div style="color:var(--text-dim);font-size:13px;text-align:center;grid-column:1/-1;padding:20px;">등록된 캐릭터가 없습니다.<br>먼저 캐릭터를 추가해주세요.</div>';
   } else {
-    characters.forEach(char => {
-      const card = document.createElement('div');
-      card.className = 'picker-card' + (char.id === pickerSelectedCharId ? ' selected' : '');
-      const imgSrc = char.imageUrl || char.imageData || '';
-      card.innerHTML = `<img src="${imgSrc}" alt="${char.name}"><div class="picker-name">${char.name}</div>`;
-      card.onclick = () => {
-        document.querySelectorAll('.picker-card').forEach(c => c.classList.remove('selected'));
-        card.classList.add('selected');
-        pickerSelectedCharId = char.id;
-      };
-      grid.appendChild(card);
-    });
+    buildPickerCards(characters);
   }
+  document.querySelector('#picker-modal-bg .modal-btn.confirm').onclick = confirmPickerSelection;
   document.getElementById('picker-modal-bg').classList.add('active');
 }
 
