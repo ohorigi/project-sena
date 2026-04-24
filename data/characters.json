@@ -463,5 +463,10 @@
     "id": "char_1777007967691",
     "name": "풍연",
     "imageUrl": "https://raw.githubusercontent.com/ohorigi/project-sena/main/data/images/char_1777007965943.jpg?t=1777007967691"
+  },
+  {
+    "id": "char_1777007984330",
+    "name": "파스칼",
+    "imageUrl": "https://raw.githubusercontent.com/ohorigi/project-sena/main/data/images/char_1777007982388.jpg?t=1777007984330"
   }
 ]
