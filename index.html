@@ -425,7 +425,7 @@
 
   #picker-modal-bg .modal-btns {
     flex-shrink: 0;
-    margin-top: 4px;
+    margin-top: 10px;
   }
 
   .modal h3 {
@@ -757,11 +757,20 @@
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 8px;
-    max-height: 52vh;
     overflow-y: auto;
     overflow-x: hidden;
     margin-bottom: 12px;
     padding-right: 2px;
+    /* 기본값 - 피커 모달 밖에서 쓸 경우 대비 */
+    max-height: 52vh;
+  }
+
+  /* 피커 모달 안에서는 flex로 높이 자동 조절 */
+  #picker-modal-bg .char-picker-grid {
+    flex: 1;
+    min-height: 0;
+    max-height: none;  /* 충돌 제거 */
+    margin-bottom: 0;
   }
 
   .picker-card {
@@ -792,7 +801,7 @@
   .picker-card .picker-name {
     width: 100%;
     flex-shrink: 0;
-    padding: 3px 2px;
+    padding: 4px 2px;
     font-size: 10px;
     font-weight: 700;
     color: var(--text);
