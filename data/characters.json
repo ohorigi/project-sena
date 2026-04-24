@@ -148,5 +148,10 @@
     "id": "char_1777001756075",
     "name": "백각",
     "imageUrl": "https://raw.githubusercontent.com/ohorigi/project-sena/main/data/images/char_1777001754266.jpg?t=1777001756075"
+  },
+  {
+    "id": "char_1777001786625",
+    "name": "백룡",
+    "imageUrl": "https://raw.githubusercontent.com/ohorigi/project-sena/main/data/images/char_1777001785005.jpg?t=1777001786625"
   }
 ]
