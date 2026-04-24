@@ -313,5 +313,10 @@
     "id": "char_1777007548167",
     "name": "유리",
     "imageUrl": "https://raw.githubusercontent.com/ohorigi/project-sena/main/data/images/char_1777007546349.jpg?t=1777007548167"
+  },
+  {
+    "id": "char_1777007563171",
+    "name": "유신",
+    "imageUrl": "https://raw.githubusercontent.com/ohorigi/project-sena/main/data/images/char_1777007561419.jpg?t=1777007563171"
   }
 ]
