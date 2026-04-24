@@ -213,5 +213,10 @@
     "id": "char_1777006175778",
     "name": "소이",
     "imageUrl": "https://raw.githubusercontent.com/ohorigi/project-sena/main/data/images/char_1777006173809.jpg?t=1777006175778"
+  },
+  {
+    "id": "char_1777006207139",
+    "name": "손오공",
+    "imageUrl": "https://raw.githubusercontent.com/ohorigi/project-sena/main/data/images/char_1777006205255.jpg?t=1777006207139"
   }
 ]
