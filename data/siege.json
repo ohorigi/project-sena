@@ -110,7 +110,7 @@
   "friday": {
     "headerImageUrl": "https://raw.githubusercontent.com/ohorigi/project-sena/main/data/images/header_friday_1777012386209.jpg?t=1777012387479",
     "topImageUrl": null,
-    "memo": "비스킷1 타카1 레첼1 라이언1 레첼2 타카2 라이언2 타카1 \n라이언1 타카2 비스킷1 레첼2 라이언2 타카2 라이언1 레첼1 \n 타타카1카2 라이언2 라이언1",
+    "memo": "비스킷1 타카1 레첼1 라이언1 레첼2 타카2 라이언2 타카1 \n라이언1 타카2 비스킷1 레첼2 라이언2 타카2 라이언1 레첼1 \n 타카1타카2 라이언2 라이언1",
     "slots": [
       {
         "charId": "char_1777001240768",
