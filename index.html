@@ -780,6 +780,97 @@
   }
   .save-indicator.show { opacity: 1; }
 
+  /* 보스 그리드 */
+  .boss-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-top: 4px;
+  }
+
+  .boss-card {
+    position: relative;
+    background: var(--dark3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: 1px;
+    min-height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .boss-card:hover {
+    border-color: var(--gold);
+    color: var(--gold-light);
+    background: rgba(201,168,76,0.08);
+  }
+
+  .boss-card-overlay {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.75);
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border-radius: 6px;
+  }
+  .boss-card:hover .boss-card-overlay,
+  .boss-card.overlay-active .boss-card-overlay { display: flex; }
+
+  .add-boss-card {
+    background: transparent;
+    border: 2px dashed var(--border);
+    border-radius: 6px;
+    padding: 16px 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 24px;
+    color: var(--text-dim);
+    min-height: 70px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+  }
+  .add-boss-card:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+  .add-boss-card span { font-size: 11px; letter-spacing: 1px; }
+
+  /* 라운드 화살표 */
+  .round-arrow {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--gold);
+    font-size: 14px;
+    width: 32px; height: 32px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    flex-shrink: 0;
+    margin: 0 4px;
+  }
+  .round-arrow:hover {
+    background: rgba(201,168,76,0.1);
+    border-color: var(--gold);
+  }
+
   /* Scrollbar */
   ::-webkit-scrollbar { width: 4px; }
   ::-webkit-scrollbar-track { background: var(--dark2); }
@@ -888,13 +979,11 @@
       <button class="main-btn" onclick="openSiegeScreen()">
         <span class="btn-icon">⚔️</span>공성전
       </button>
-      <button class="main-btn disabled">
+      <button class="main-btn" onclick="openRaidScreen()">
         <span class="btn-icon">🌟</span>강림원정대
-        <span class="coming-soon">COMING SOON</span>
       </button>
-      <button class="main-btn disabled">
+      <button class="main-btn" onclick="openDestScreen()">
         <span class="btn-icon">💀</span>파괴신
-        <span class="coming-soon">COMING SOON</span>
       </button>
     </div>
   </div>
@@ -948,8 +1037,8 @@
     </div>
     <div class="char-slot-list" id="char-slot-list"></div>
     <div class="day-bottom-memo">
-      <label>✦ 메모</label>
-      <textarea id="day-memo" placeholder="공략 메모, 주의사항 등을 자유롭게 입력하세요..."></textarea>
+      <label>✦ 스킬 순서</label>
+      <textarea id="day-memo" placeholder="스킬 순서를 입력하세요..."></textarea>
     </div>
   </div>
 </div>
@@ -1002,8 +1091,62 @@
   </div>
 </div>
 
-<!-- TOP IMAGE UPLOAD -->
-<input type="file" id="top-img-input" accept="image/*" style="display:none" onchange="handleTopImageUpload(event)">
+<!-- ===== RAID SCREEN (강림원정대) ===== -->
+<div id="raid-screen" class="screen">
+  <div class="screen-header">
+    <button class="back-btn" onclick="closeScreen('raid-screen')">‹</button>
+    <div class="screen-title">🌟 강림원정대</div>
+    <button onclick="openBossAddModal('raid')" style="margin-left:auto;background:none;border:1px solid var(--border);border-radius:4px;color:var(--gold);font-size:12px;padding:6px 12px;cursor:pointer;letter-spacing:1px;">+ 보스 추가</button>
+  </div>
+  <div class="screen-body">
+    <div class="boss-grid" id="raid-boss-grid"></div>
+  </div>
+</div>
+
+<!-- ===== DESTROYER SCREEN (파괴신) ===== -->
+<div id="dest-screen" class="screen">
+  <div class="screen-header">
+    <button class="back-btn" onclick="closeScreen('dest-screen')">‹</button>
+    <div class="screen-title">💀 파괴신</div>
+    <button onclick="openBossAddModal('dest')" style="margin-left:auto;background:none;border:1px solid var(--border);border-radius:4px;color:var(--gold);font-size:12px;padding:6px 12px;cursor:pointer;letter-spacing:1px;">+ 보스 추가</button>
+  </div>
+  <div class="screen-body">
+    <div class="boss-grid" id="dest-boss-grid"></div>
+  </div>
+</div>
+
+<!-- ===== BOSS ROUND SCREEN ===== -->
+<div id="boss-screen" class="screen">
+  <div class="screen-header">
+    <button class="back-btn" id="boss-back-btn">‹</button>
+    <button class="round-arrow" onclick="prevRound()">◀</button>
+    <div class="screen-title" id="boss-screen-title">연희 - 1라운드</div>
+    <button class="round-arrow" onclick="nextRound()">▶</button>
+  </div>
+  <div class="screen-body">
+    <div class="day-banner-img" id="boss-banner-img" onclick="triggerBossBannerUpload()">
+      <div class="banner-plus-hint">✚ <span>이미지 추가</span></div>
+    </div>
+    <div class="char-slot-list" id="boss-slot-list"></div>
+    <div class="day-bottom-memo">
+      <label>✦ 스킬 순서</label>
+      <textarea id="boss-memo" placeholder="스킬 순서를 입력하세요..."></textarea>
+    </div>
+  </div>
+</div>
+<input type="file" id="boss-banner-input" accept="image/*" style="display:none" onchange="handleBossBannerUpload(event)">
+
+<!-- ===== BOSS ADD/EDIT MODAL ===== -->
+<div class="modal-bg" id="boss-modal-bg">
+  <div class="modal">
+    <h3 id="boss-modal-title">보스 추가</h3>
+    <input type="text" id="boss-name-input" placeholder="보스 이름 (예: 연희, 태오, 카르마...)">
+    <div class="modal-btns">
+      <button class="modal-btn cancel" onclick="closeBossModal()">취소</button>
+      <button class="modal-btn confirm" onclick="saveBoss()">저장</button>
+    </div>
+  </div>
+</div>
 
 <!-- SAVE INDICATOR -->
 <div class="save-indicator" id="save-indicator">✓ 저장됨</div>
@@ -1012,33 +1155,49 @@
 <script>
 // ===== STATE =====
 let config = { owner: '', repo: '', token: '' };
-let characters = []; // [{id, name, imageData (base64)}]
-let siegeData = {}; // {monday: {topImage, slots:[{charId, comment}]}}
+let characters = [];
+let siegeData = {};
+let raidData = { bosses: [], bossData: {} };   // 강림원정대
+let destData = { bosses: [], bossData: {} };   // 파괴신
 let editingCharId = null;
 let pendingCharImageData = null;
 let currentDay = null;
+let currentMode = 'siege'; // 'siege' | 'raid' | 'dest'
+let currentBossId = null;
+let currentRound = 1; // 1 or 2
 let pickerTargetSlot = null;
 let pickerSelectedCharId = null;
+let editingBossId = null;
+let editingBossMode = null;
 
 const DAYS = ['monday','tuesday','wednesday','thursday','friday','saturday','sunday'];
 const DAY_NAMES = { monday:'월요일', tuesday:'화요일', wednesday:'수요일', thursday:'목요일', friday:'금요일', saturday:'토요일', sunday:'일요일' };
 
+function makeEmptyRoundData() {
+  return {
+    headerImageUrl: null,
+    memo: '',
+    slots: Array(5).fill(null).map(() => ({charId:null, comment:''}))
+  };
+}
+
+function makeEmptyBossData() {
+  return { r1: makeEmptyRoundData(), r2: makeEmptyRoundData() };
+}
+
 // ===== INIT =====
 window.onload = function() {
-  // Init siege data structure
   DAYS.forEach(d => {
-    siegeData[d] = { topImage: null, slots: Array(5).fill(null).map(() => ({charId:null, comment:''})) };
+    siegeData[d] = { headerImageUrl: null, topImageUrl: null, memo: '', slots: Array(5).fill(null).map(() => ({charId:null, comment:''})) };
   });
 
   const saved = localStorage.getItem('sk_config');
   if (saved) {
     config = JSON.parse(saved);
-    // 설정이 있으면 모달 숨기고 바로 로드
     document.getElementById('config-modal-bg').classList.remove('active');
     document.getElementById('cfg-cancel-btn').style.display = 'block';
     loadFromGitHub();
   } else {
-    // 처음 접속 - 설정창 표시
     document.getElementById('config-modal-bg').classList.add('active');
   }
 };
@@ -1104,21 +1263,17 @@ async function loadFromGitHub() {
     });
     if (res1.ok) {
       const file = await res1.json();
-      // 한글 안깨지는 디코딩
       const jsonStr = decodeURIComponent(escape(atob(file.content.replace(/\n/g,''))));
-      const loaded = JSON.parse(jsonStr);
-      characters = loaded.map(c => ({ id: c.id, name: c.name, imageUrl: c.imageUrl || null }));
+      characters = JSON.parse(jsonStr).map(c => ({ id: c.id, name: c.name, imageUrl: c.imageUrl || null }));
     }
 
-    // 공성전 데이터 로드
+    // 공성전 로드
     const res2 = await fetch(`https://api.github.com/repos/${config.owner}/${config.repo}/contents/data/siege.json`, {
       headers: { 'Authorization': `token ${config.token}`, 'Accept': 'application/vnd.github.v3+json' }
     });
     if (res2.ok) {
       const file = await res2.json();
-      // 한글 안깨지는 디코딩
-      const jsonStr = decodeURIComponent(escape(atob(file.content.replace(/\n/g,''))));
-      const loaded = JSON.parse(jsonStr);
+      const loaded = JSON.parse(decodeURIComponent(escape(atob(file.content.replace(/\n/g,'')))));
       DAYS.forEach(d => {
         if (loaded[d]) {
           siegeData[d] = {
@@ -1130,6 +1285,31 @@ async function loadFromGitHub() {
         }
       });
     }
+
+    // 강림원정대 로드
+    const res3 = await fetch(`https://api.github.com/repos/${config.owner}/${config.repo}/contents/data/raid.json`, {
+      headers: { 'Authorization': `token ${config.token}`, 'Accept': 'application/vnd.github.v3+json' }
+    });
+    if (res3.ok) {
+      const file = await res3.json();
+      raidData = JSON.parse(decodeURIComponent(escape(atob(file.content.replace(/\n/g,'')))));
+    } else {
+      raidData = { bosses: [], bossData: {} };
+      await saveToGitHub('data/raid.json', raidData);
+    }
+
+    // 파괴신 로드
+    const res4 = await fetch(`https://api.github.com/repos/${config.owner}/${config.repo}/contents/data/dest.json`, {
+      headers: { 'Authorization': `token ${config.token}`, 'Accept': 'application/vnd.github.v3+json' }
+    });
+    if (res4.ok) {
+      const file = await res4.json();
+      destData = JSON.parse(decodeURIComponent(escape(atob(file.content.replace(/\n/g,'')))));
+    } else {
+      destData = { bosses: [], bossData: {} };
+      await saveToGitHub('data/dest.json', destData);
+    }
+
     showToast('✓ 데이터 로드 완료');
   } catch(e) {
     showToast('⚠️ 로드 실패: ' + e.message);
@@ -1270,6 +1450,259 @@ async function saveSiegeData() {
     };
   });
   await saveToGitHub('data/siege.json', toSave);
+}
+
+async function saveRaidData() { await saveToGitHub('data/raid.json', raidData); }
+async function saveDestData() { await saveToGitHub('data/dest.json', destData); }
+
+// ===== RAID / DEST SCREENS =====
+function openRaidScreen() {
+  currentMode = 'raid';
+  renderBossGrid('raid');
+  openScreen('raid-screen');
+}
+
+function openDestScreen() {
+  currentMode = 'dest';
+  renderBossGrid('dest');
+  openScreen('dest-screen');
+}
+
+function getDataByMode(mode) { return mode === 'raid' ? raidData : destData; }
+
+function renderBossGrid(mode) {
+  const data = getDataByMode(mode);
+  const grid = document.getElementById(mode + '-boss-grid');
+  grid.innerHTML = '';
+  (data.bosses || []).forEach(boss => {
+    const card = document.createElement('div');
+    card.className = 'boss-card';
+    card.innerHTML = `
+      <span>${boss.name}</span>
+      <div class="boss-card-overlay">
+        <button class="overlay-btn edit" onclick="editBoss('${mode}','${boss.id}');event.stopPropagation()">편집</button>
+        <button class="overlay-btn delete" onclick="deleteBoss('${mode}','${boss.id}');event.stopPropagation()">삭제</button>
+      </div>`;
+    card.onclick = () => openBossScreen(mode, boss.id);
+    grid.appendChild(card);
+  });
+  // + 추가 카드
+  const addCard = document.createElement('div');
+  addCard.className = 'add-boss-card';
+  addCard.innerHTML = `<span>+</span><span>추가</span>`;
+  addCard.onclick = () => openBossAddModal(mode);
+  grid.appendChild(addCard);
+}
+
+// ===== BOSS ADD/EDIT MODAL =====
+function openBossAddModal(mode) {
+  editingBossMode = mode;
+  editingBossId = null;
+  document.getElementById('boss-modal-title').textContent = '보스 추가';
+  document.getElementById('boss-name-input').value = '';
+  document.getElementById('boss-modal-bg').classList.add('active');
+}
+
+function editBoss(mode, id) {
+  editingBossMode = mode;
+  editingBossId = id;
+  const data = getDataByMode(mode);
+  const boss = data.bosses.find(b => b.id === id);
+  document.getElementById('boss-modal-title').textContent = '보스 편집';
+  document.getElementById('boss-name-input').value = boss.name;
+  document.getElementById('boss-modal-bg').classList.add('active');
+}
+
+function closeBossModal() {
+  document.getElementById('boss-modal-bg').classList.remove('active');
+}
+
+async function saveBoss() {
+  const name = document.getElementById('boss-name-input').value.trim();
+  if (!name) { showToast('보스 이름을 입력해주세요'); return; }
+  const data = getDataByMode(editingBossMode);
+  if (editingBossId) {
+    const boss = data.bosses.find(b => b.id === editingBossId);
+    boss.name = name;
+  } else {
+    const id = 'boss_' + Date.now();
+    data.bosses.push({ id, name });
+    data.bossData[id] = makeEmptyBossData();
+  }
+  closeBossModal();
+  renderBossGrid(editingBossMode);
+  if (editingBossMode === 'raid') await saveRaidData();
+  else await saveDestData();
+}
+
+async function deleteBoss(mode, id) {
+  if (!confirm('이 보스를 삭제하시겠습니까?')) return;
+  const data = getDataByMode(mode);
+  data.bosses = data.bosses.filter(b => b.id !== id);
+  delete data.bossData[id];
+  renderBossGrid(mode);
+  if (mode === 'raid') await saveRaidData();
+  else await saveDestData();
+}
+
+// ===== BOSS ROUND SCREEN =====
+function openBossScreen(mode, bossId) {
+  currentMode = mode;
+  currentBossId = bossId;
+  currentRound = 1;
+  const data = getDataByMode(mode);
+  if (!data.bossData[bossId]) data.bossData[bossId] = makeEmptyBossData();
+  // 뒤로가기 버튼
+  document.getElementById('boss-back-btn').onclick = () => closeScreen('boss-screen');
+  renderBossRoundScreen();
+  openScreen('boss-screen');
+}
+
+function getBossRoundData() {
+  const data = getDataByMode(currentMode);
+  if (!data.bossData[currentBossId]) data.bossData[currentBossId] = makeEmptyBossData();
+  return currentRound === 1 ? data.bossData[currentBossId].r1 : data.bossData[currentBossId].r2;
+}
+
+function renderBossRoundScreen() {
+  const data = getDataByMode(currentMode);
+  const boss = data.bosses.find(b => b.id === currentBossId);
+  document.getElementById('boss-screen-title').textContent = `${boss.name} - ${currentRound}라운드`;
+  const rd = getBossRoundData();
+  // 배너
+  const bannerEl = document.getElementById('boss-banner-img');
+  if (rd.headerImageUrl) {
+    bannerEl.innerHTML = `<img src="${rd.headerImageUrl}" alt="banner">`;
+  } else {
+    bannerEl.innerHTML = `<div class="banner-plus-hint">✚ <span>이미지 추가</span></div>`;
+  }
+  // 슬롯
+  renderBossSlots();
+  // 스킬 순서
+  const memo = document.getElementById('boss-memo');
+  memo.value = rd.memo || '';
+  memo.oninput = () => { getBossRoundData().memo = memo.value; debounceBossSave(); };
+}
+
+function prevRound() {
+  if (currentRound === 1) return;
+  currentRound = 1;
+  renderBossRoundScreen();
+}
+
+function nextRound() {
+  if (currentRound === 2) return;
+  currentRound = 2;
+  renderBossRoundScreen();
+}
+
+function renderBossSlots() {
+  const list = document.getElementById('boss-slot-list');
+  list.innerHTML = '';
+  const rd = getBossRoundData();
+  rd.slots.forEach((slot, idx) => {
+    const div = document.createElement('div');
+    div.className = 'char-slot';
+    const topRow = document.createElement('div');
+    topRow.className = 'slot-top-row';
+    const charArea = document.createElement('div');
+    charArea.className = 'slot-char-area';
+    charArea.onclick = () => openBossPickerModal(idx);
+    if (slot.charId) {
+      const char = characters.find(c => c.id === slot.charId);
+      if (char) {
+        const imgSrc = char.imageUrl || '';
+        charArea.innerHTML = `<div class="slot-char-img-wrap"><img src="${imgSrc}" alt="${char.name}"></div><span class="slot-char-name">${char.name}</span>`;
+      } else {
+        charArea.innerHTML = `<span class="plus-icon">+</span>`;
+        slot.charId = null;
+      }
+    } else {
+      charArea.innerHTML = `<span class="plus-icon">+</span>`;
+    }
+    const textarea = document.createElement('textarea');
+    textarea.className = 'slot-comment';
+    textarea.placeholder = '코멘트를 입력하세요...';
+    textarea.value = slot.comment || '';
+    textarea.addEventListener('input', () => {
+      getBossRoundData().slots[idx].comment = textarea.value;
+      debounceBossSave();
+    });
+    topRow.appendChild(charArea);
+    topRow.appendChild(textarea);
+    div.appendChild(topRow);
+    list.appendChild(div);
+  });
+}
+
+function triggerBossBannerUpload() {
+  document.getElementById('boss-banner-input').click();
+}
+
+function handleBossBannerUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  compressImage(file, 600, 200, 0.92).then(async compressed => {
+    showLoadingOverlay(true);
+    try {
+      const filename = `boss_${currentBossId}_r${currentRound}_${Date.now()}.jpg`;
+      const imageUrl = await saveImageToGitHub(compressed, filename);
+      if (!imageUrl) { showToast('⚠️ 이미지 업로드 실패'); return; }
+      getBossRoundData().headerImageUrl = imageUrl;
+      renderBossRoundScreen();
+      if (currentMode === 'raid') await saveRaidData();
+      else await saveDestData();
+    } finally {
+      showLoadingOverlay(false);
+    }
+  });
+  event.target.value = '';
+}
+
+// 보스 전용 피커
+function openBossPickerModal(slotIdx) {
+  pickerTargetSlot = slotIdx;
+  pickerSelectedCharId = getBossRoundData().slots[slotIdx].charId;
+  const grid = document.getElementById('char-picker-grid');
+  grid.innerHTML = '';
+  if (characters.length === 0) {
+    grid.innerHTML = '<div style="color:var(--text-dim);font-size:13px;text-align:center;grid-column:1/-1;padding:20px;">등록된 캐릭터가 없습니다.</div>';
+  } else {
+    characters.forEach(char => {
+      const card = document.createElement('div');
+      card.className = 'picker-card' + (char.id === pickerSelectedCharId ? ' selected' : '');
+      const imgSrc = char.imageUrl || '';
+      card.innerHTML = `<img src="${imgSrc}" alt="${char.name}"><div class="picker-name">${char.name}</div>`;
+      card.onclick = () => {
+        document.querySelectorAll('.picker-card').forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
+        pickerSelectedCharId = char.id;
+      };
+      grid.appendChild(card);
+    });
+  }
+  // 확인 버튼을 보스용으로 교체
+  document.querySelector('#picker-modal-bg .modal-btn.confirm').onclick = confirmBossPickerSelection;
+  document.getElementById('picker-modal-bg').classList.add('active');
+}
+
+function confirmBossPickerSelection() {
+  if (pickerSelectedCharId !== null && pickerTargetSlot !== null) {
+    getBossRoundData().slots[pickerTargetSlot].charId = pickerSelectedCharId;
+    renderBossSlots();
+    debounceBossSave();
+  }
+  document.querySelector('#picker-modal-bg .modal-btn.confirm').onclick = confirmPickerSelection;
+  document.getElementById('picker-modal-bg').classList.remove('active');
+}
+
+let bossTimer = null;
+function debounceBossSave() {
+  clearTimeout(bossTimer);
+  bossTimer = setTimeout(async () => {
+    if (currentMode === 'raid') await saveRaidData();
+    else await saveDestData();
+  }, 1500);
 }
 
 function showSaveIndicator() {
