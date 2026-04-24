@@ -713,7 +713,9 @@
     font-size: 13px;
     padding: 10px 12px;
     resize: none;
-    height: 90px;
+    height: auto;
+    min-height: 60px;
+    overflow: hidden;
     outline: none;
     transition: border-color 0.2s;
     line-height: 1.6;
@@ -1671,7 +1673,12 @@ function renderBossRoundScreen() {
   // 스킬 순서
   const memo = document.getElementById('boss-memo');
   memo.value = rd.memo || '';
-  memo.oninput = () => { getBossRoundData().memo = memo.value; debounceBossSave(); };
+  memo.oninput = () => {
+    getBossRoundData().memo = memo.value;
+    autoResize(memo);
+    debounceBossSave();
+  };
+  autoResize(memo);
 }
 
 function prevRound() {
@@ -1808,7 +1815,11 @@ function showToast(msg) {
   setTimeout(() => el.classList.remove('show'), 2500);
 }
 
-// ===== SCREENS (history API 연동) =====
+// ===== 텍스트창 자동 높이 조절 =====
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = el.scrollHeight + 'px';
+}
 // 현재 열린 화면 스택
 let screenStack = [];
 
@@ -2002,8 +2013,10 @@ function openDayScreen(day, label) {
   memo.value = siegeData[currentDay].memo || '';
   memo.oninput = () => {
     siegeData[currentDay].memo = memo.value;
+    autoResize(memo);
     debounceSave();
   };
+  autoResize(memo);
   // 헤더 이미지 로드
   renderHeaderImage();
   openScreen('day-screen');
