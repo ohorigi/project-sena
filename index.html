@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>세븐나이츠 PVE 공략</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Cinzel:wght@700;900&display=swap');
+
+  :root {
+    --gold: #c9a84c;
+    --gold-light: #f0d080;
+    --dark: #0a0a0f;
+    --dark2: #12121a;
+    --dark3: #1a1a28;
+    --panel: rgba(15,15,25,0.92);
+    --border: rgba(201,168,76,0.3);
+    --text: #e8e0d0;
+    --text-dim: #8a7a6a;
+    --blue: #4a8fd4;
+    --red: #d44a4a;
+    --green: #4ad48a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: var(--dark);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ===== DASHBOARD ===== */
+  #dashboard {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  #bg-image {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    z-index: 0;
+    opacity: 0.55;
+  }
+
+  #bg-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: linear-gradient(to bottom,
+      rgba(5,5,10,0.3) 0%,
+      rgba(5,5,10,0.5) 40%,
+      rgba(5,5,10,0.85) 100%);
+    z-index: 1;
+  }
+
+  .dashboard-content {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 0 16px 120px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* Logo area */
+  .logo-area {
+    margin-top: 60px;
+    text-align: center;
+  }
+
+  .game-logo {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    letter-spacing: 6px;
+    color: var(--gold-light);
+    text-transform: uppercase;
+    opacity: 0.8;
+    margin-bottom: 2px;
+  }
+
+  .game-logo-main {
+    font-family: 'Cinzel', serif;
+    font-size: 28px;
+    font-weight: 900;
+    letter-spacing: 4px;
+    color: #fff;
+    text-shadow: 0 0 30px rgba(201,168,76,0.8), 0 2px 4px rgba(0,0,0,0.8);
+    line-height: 1;
+  }
+
+  .rebirth-text {
+    font-family: 'Cinzel', serif;
+    font-size: 14px;
+    letter-spacing: 8px;
+    color: var(--gold);
+    text-shadow: 0 0 20px rgba(201,168,76,0.6);
+    margin-top: 2px;
+    margin-bottom: 6px;
+  }
+
+  .subtitle {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--gold-light);
+    letter-spacing: 2px;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+    padding: 6px 20px;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    margin-top: 8px;
+  }
+
+  /* Main buttons */
+  .main-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: 100%;
+    margin-top: 40px;
+  }
+
+  .main-btn {
+    width: 100%;
+    padding: 18px 24px;
+    background: linear-gradient(135deg, rgba(20,20,35,0.95), rgba(30,25,50,0.95));
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text);
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+  }
+
+  .main-btn::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(201,168,76,0.15), transparent);
+    transition: left 0.5s;
+  }
+
+  .main-btn:hover::before { left: 100%; }
+
+  .main-btn:hover {
+    border-color: var(--gold);
+    color: var(--gold-light);
+    box-shadow: 0 0 20px rgba(201,168,76,0.2), inset 0 0 20px rgba(201,168,76,0.05);
+    transform: translateY(-2px);
+  }
+
+  .main-btn.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+  .main-btn.disabled:hover {
+    transform: none;
+    border-color: var(--border);
+    color: var(--text);
+    box-shadow: none;
+  }
+
+  .btn-icon {
+    margin-right: 10px;
+    font-size: 20px;
+  }
+
+  .coming-soon {
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+    margin-left: 8px;
+  }
+
+  /* Edit button (bottom right) */
+  #edit-btn {
+    position: fixed;
+    bottom: 28px;
+    right: 20px;
+    z-index: 10;
+    background: linear-gradient(135deg, var(--gold), #8a5c1a);
+    border: none;
+    border-radius: 50px;
+    color: #1a1000;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 12px 20px;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(201,168,76,0.4);
+    transition: all 0.3s;
+    letter-spacing: 1px;
+  }
+  #edit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(201,168,76,0.5);
+  }
+
+  /* ===== SCREENS ===== */
+  .screen {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: var(--dark);
+    z-index: 100;
+    overflow-y: auto;
+  }
+  .screen.active { display: block; }
+
+  .screen-header {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    background: var(--dark2);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .back-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--gold);
+    font-size: 18px;
+    width: 38px; height: 38px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+  .back-btn:hover {
+    background: rgba(201,168,76,0.1);
+    border-color: var(--gold);
+  }
+
+  .screen-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--gold-light);
+    letter-spacing: 2px;
+    margin-left: 14px;
+  }
+
+  .screen-body {
+    padding: 20px 16px;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  /* ===== CHARACTER EDIT SCREEN ===== */
+  .char-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-top: 4px;
+  }
+
+  .char-card {
+    position: relative;
+    aspect-ratio: 3/4;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--dark3);
+    cursor: pointer;
+  }
+
+  .char-card img {
+    width: 100%; height: 70%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .char-card .char-name-tag {
+    width: 100%;
+    height: 30%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text);
+    background: var(--dark3);
+    padding: 4px;
+    text-align: center;
+    word-break: keep-all;
+  }
+
+  .char-card-overlay {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.75);
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .char-card:hover .char-card-overlay,
+  .char-card.overlay-active .char-card-overlay {
+    display: flex;
+  }
+
+  .overlay-btn {
+    width: 80%;
+    padding: 8px;
+    border-radius: 4px;
+    border: none;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .overlay-btn.edit {
+    background: var(--blue);
+    color: #fff;
+  }
+
+  .overlay-btn.delete {
+    background: var(--red);
+    color: #fff;
+  }
+
+  .add-char-card {
+    aspect-ratio: 3/4;
+    border-radius: 6px;
+    border: 2px dashed var(--border);
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    color: var(--text-dim);
+    font-size: 32px;
+  }
+
+  .add-char-card:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+    background: rgba(201,168,76,0.05);
+  }
+
+  .add-char-card span {
+    font-size: 11px;
+    margin-top: 6px;
+    letter-spacing: 1px;
+  }
+
+  /* ===== MODAL ===== */
+  .modal-bg {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.8);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal-bg.active { display: flex; }
+
+  .modal {
+    background: var(--dark2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+    width: 100%;
+    max-width: 360px;
+  }
+
+  .modal h3 {
+    font-size: 15px;
+    color: var(--gold-light);
+    letter-spacing: 2px;
+    margin-bottom: 18px;
+    text-align: center;
+  }
+
+  .modal-img-upload {
+    width: 100%;
+    aspect-ratio: 1;
+    border: 2px dashed var(--border);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    margin-bottom: 14px;
+    overflow: hidden;
+    position: relative;
+    background: var(--dark3);
+  }
+
+  .modal-img-upload img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+  }
+
+  .modal-img-upload .upload-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--text-dim);
+    font-size: 13px;
+    gap: 8px;
+  }
+
+  .modal-img-upload .upload-placeholder .icon { font-size: 32px; }
+
+  .modal input[type="text"] {
+    width: 100%;
+    padding: 10px 14px;
+    background: var(--dark3);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text);
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 14px;
+    margin-bottom: 16px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .modal input[type="text"]:focus { border-color: var(--gold); }
+  .modal input[type="text"]::placeholder { color: var(--text-dim); }
+
+  .modal-btns {
+    display: flex;
+    gap: 10px;
+  }
+
+  .modal-btn {
+    flex: 1;
+    padding: 10px;
+    border-radius: 4px;
+    border: none;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .modal-btn.cancel {
+    background: var(--dark3);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+  }
+
+  .modal-btn.confirm {
+    background: linear-gradient(135deg, var(--gold), #8a5c1a);
+    color: #1a1000;
+  }
+
+  /* ===== SIEGE SCREEN (공성전) ===== */
+  .day-buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-top: 8px;
+  }
+
+  @media (max-width: 400px) {
+    .day-buttons { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  .day-btn {
+    padding: 14px 6px;
+    background: var(--dark3);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text);
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-align: center;
+    letter-spacing: 1px;
+  }
+
+  .day-btn:hover {
+    border-color: var(--gold);
+    color: var(--gold-light);
+    background: rgba(201,168,76,0.08);
+  }
+
+  /* ===== DAY DETAIL SCREEN ===== */
+  .day-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .day-header-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--gold-light);
+    letter-spacing: 2px;
+  }
+
+  .day-top-image {
+    width: 100%;
+    aspect-ratio: 16/7;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    background: var(--dark3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    margin-bottom: 18px;
+    position: relative;
+  }
+
+  .day-top-image img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+  }
+
+  .day-top-image .upload-hint {
+    color: var(--text-dim);
+    font-size: 13px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .day-top-image .upload-hint .icon { font-size: 28px; }
+
+  .char-slot-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .char-slot {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--dark3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px;
+    min-height: 72px;
+  }
+
+  .slot-char-area {
+    width: 52px;
+    height: 52px;
+    border-radius: 4px;
+    border: 1px dashed var(--border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    overflow: hidden;
+    position: relative;
+    background: var(--dark);
+  }
+
+  .slot-char-area img {
+    width: 100%; height: 75%;
+    object-fit: cover;
+  }
+
+  .slot-char-name {
+    font-size: 9px;
+    color: var(--text-dim);
+    text-align: center;
+    width: 100%;
+    padding: 2px 1px;
+    background: var(--dark3);
+    height: 25%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    word-break: keep-all;
+  }
+
+  .slot-char-area .plus-icon {
+    font-size: 22px;
+    color: var(--text-dim);
+  }
+
+  .slot-char-area:hover {
+    border-color: var(--gold);
+  }
+
+  .slot-comment {
+    flex: 1;
+    background: var(--dark);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text);
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 13px;
+    padding: 8px 10px;
+    resize: none;
+    height: 52px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .slot-comment:focus { border-color: var(--gold); }
+  .slot-comment::placeholder { color: var(--text-dim); font-size: 12px; }
+
+  /* Character Picker Modal */
+  .char-picker-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    max-height: 60vh;
+    overflow-y: auto;
+    margin-bottom: 14px;
+  }
+
+  .picker-card {
+    aspect-ratio: 3/4;
+    border-radius: 4px;
+    overflow: hidden;
+    border: 2px solid transparent;
+    cursor: pointer;
+    background: var(--dark3);
+    transition: all 0.2s;
+  }
+
+  .picker-card:hover, .picker-card.selected {
+    border-color: var(--gold);
+  }
+
+  .picker-card img {
+    width: 100%; height: 72%;
+    object-fit: cover;
+  }
+
+  .picker-card .picker-name {
+    height: 28%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text);
+    text-align: center;
+    padding: 2px;
+    word-break: keep-all;
+  }
+
+  /* Save indicator */
+  .save-indicator {
+    position: fixed;
+    top: 70px;
+    right: 16px;
+    background: rgba(74,212,138,0.15);
+    border: 1px solid var(--green);
+    color: var(--green);
+    font-size: 12px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    z-index: 300;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+  }
+  .save-indicator.show { opacity: 1; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--dark2); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  /* Config modal */
+  .config-modal {
+    background: var(--dark2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+    width: 100%;
+    max-width: 360px;
+  }
+
+  .config-modal h3 {
+    font-size: 15px;
+    color: var(--gold-light);
+    letter-spacing: 2px;
+    margin-bottom: 14px;
+    text-align: center;
+  }
+
+  .config-modal input[type="text"] {
+    width: 100%;
+    padding: 10px 14px;
+    background: var(--dark3);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text);
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 13px;
+    margin-bottom: 8px;
+    outline: none;
+  }
+  .config-modal input:focus { border-color: var(--gold); }
+
+  .config-note {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--dark2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-size: 13px;
+    padding: 10px 20px;
+    border-radius: 20px;
+    z-index: 500;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+  .toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+
+<!-- ===== DASHBOARD ===== -->
+<div id="dashboard">
+  <img id="bg-image" src="seven_knights_bg.jpg" alt="background">
+  <div id="bg-overlay"></div>
+
+  <div class="dashboard-content">
+    <div class="logo-area">
+      <div class="game-logo">SEVEN KNIGHTS</div>
+      <div class="game-logo-main">七騎士</div>
+      <div class="rebirth-text">RE:BIRTH</div>
+      <div class="subtitle">PVE 공략</div>
+    </div>
+
+    <div class="main-buttons">
+      <button class="main-btn" onclick="openSiegeScreen()">
+        <span class="btn-icon">⚔️</span>공성전
+      </button>
+      <button class="main-btn disabled">
+        <span class="btn-icon">🌟</span>강림원정대
+        <span class="coming-soon">COMING SOON</span>
+      </button>
+      <button class="main-btn disabled">
+        <span class="btn-icon">💀</span>파괴신
+        <span class="coming-soon">COMING SOON</span>
+      </button>
+    </div>
+  </div>
+
+  <button id="edit-btn" onclick="openCharEdit()">✦ 캐릭터 편집</button>
+</div>
+
+<!-- ===== CHARACTER EDIT SCREEN ===== -->
+<div id="char-edit-screen" class="screen">
+  <div class="screen-header">
+    <button class="back-btn" onclick="closeScreen('char-edit-screen')">‹</button>
+    <div class="screen-title">캐릭터 편집</div>
+  </div>
+  <div class="screen-body">
+    <div class="char-grid" id="char-grid">
+      <!-- dynamically filled -->
+    </div>
+  </div>
+</div>
+
+<!-- ===== SIEGE SCREEN ===== -->
+<div id="siege-screen" class="screen">
+  <div class="screen-header">
+    <button class="back-btn" onclick="closeScreen('siege-screen')">‹</button>
+    <div class="screen-title">⚔️ 공성전</div>
+  </div>
+  <div class="screen-body">
+    <div class="day-buttons">
+      <button class="day-btn" onclick="openDayScreen('monday','월요일')">월요일</button>
+      <button class="day-btn" onclick="openDayScreen('tuesday','화요일')">화요일</button>
+      <button class="day-btn" onclick="openDayScreen('wednesday','수요일')">수요일</button>
+      <button class="day-btn" onclick="openDayScreen('thursday','목요일')">목요일</button>
+      <button class="day-btn" onclick="openDayScreen('friday','금요일')">금요일</button>
+      <button class="day-btn" onclick="openDayScreen('saturday','토요일')">토요일</button>
+      <button class="day-btn" onclick="openDayScreen('sunday','일요일')">일요일</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== DAY DETAIL SCREEN ===== -->
+<div id="day-screen" class="screen">
+  <div class="screen-header">
+    <button class="back-btn" onclick="closeScreen('day-screen')">‹</button>
+    <div class="screen-title" id="day-screen-title">월요일</div>
+    <div style="margin-left:auto">
+      <button onclick="triggerTopImageUpload()" style="background:none;border:1px solid var(--border);border-radius:4px;color:var(--text-dim);font-size:11px;padding:6px 10px;cursor:pointer;letter-spacing:1px;">🖼️ 이미지</button>
+    </div>
+  </div>
+  <div class="screen-body">
+    <div class="day-top-image" id="day-top-image" onclick="triggerTopImageUpload()">
+      <div class="upload-hint">
+        <span class="icon">🖼️</span>
+        <span>이미지를 추가하세요</span>
+      </div>
+    </div>
+    <div class="char-slot-list" id="char-slot-list">
+      <!-- 5 slots rendered by JS -->
+    </div>
+  </div>
+</div>
+
+<!-- ===== CONFIG MODAL (GitHub Token/Repo) ===== -->
+<div class="modal-bg active" id="config-modal-bg">
+  <div class="config-modal">
+    <h3>⚙️ GitHub 설정</h3>
+    <p class="config-note">앱을 처음 사용할 때 한 번만 설정합니다.<br>데이터를 GitHub에 저장하여 모든 기기에서 동기화합니다.</p>
+    <input type="text" id="cfg-owner" placeholder="GitHub 사용자명 (예: john123)">
+    <input type="text" id="cfg-repo" placeholder="저장소명 (예: my-image-app)">
+    <input type="text" id="cfg-token" placeholder="Personal Access Token (ghp_...)">
+    <div class="modal-btns" style="margin-top:8px">
+      <button class="modal-btn confirm" onclick="saveConfig()">저장 및 시작</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CHARACTER ADD/EDIT MODAL ===== -->
+<div class="modal-bg" id="char-modal-bg">
+  <div class="modal">
+    <h3 id="char-modal-title">캐릭터 추가</h3>
+    <div class="modal-img-upload" id="modal-img-upload" onclick="document.getElementById('char-img-input').click()">
+      <div class="upload-placeholder">
+        <span class="icon">📷</span>
+        <span>이미지 클릭하여 업로드</span>
+      </div>
+    </div>
+    <input type="file" id="char-img-input" accept="image/*" style="display:none" onchange="handleCharImgUpload(event)">
+    <input type="text" id="char-name-input" placeholder="캐릭터 이름을 입력하세요">
+    <div class="modal-btns">
+      <button class="modal-btn cancel" onclick="closeCharModal()">취소</button>
+      <button class="modal-btn confirm" onclick="saveCharacter()">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CHARACTER PICKER MODAL ===== -->
+<div class="modal-bg" id="picker-modal-bg">
+  <div class="modal">
+    <h3>캐릭터 선택</h3>
+    <div class="char-picker-grid" id="char-picker-grid"></div>
+    <div class="modal-btns">
+      <button class="modal-btn cancel" onclick="closePickerModal()">취소</button>
+      <button class="modal-btn confirm" onclick="confirmPickerSelection()">선택</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOP IMAGE UPLOAD -->
+<input type="file" id="top-img-input" accept="image/*" style="display:none" onchange="handleTopImageUpload(event)">
+
+<!-- SAVE INDICATOR -->
+<div class="save-indicator" id="save-indicator">✓ 저장됨</div>
+<div class="toast" id="toast"></div>
+
+<script>
+// ===== STATE =====
+let config = { owner: '', repo: '', token: '' };
+let characters = []; // [{id, name, imageData (base64)}]
+let siegeData = {}; // {monday: {topImage, slots:[{charId, comment}]}}
+let editingCharId = null;
+let pendingCharImageData = null;
+let currentDay = null;
+let pickerTargetSlot = null;
+let pickerSelectedCharId = null;
+
+const DAYS = ['monday','tuesday','wednesday','thursday','friday','saturday','sunday'];
+const DAY_NAMES = { monday:'월요일', tuesday:'화요일', wednesday:'수요일', thursday:'목요일', friday:'금요일', saturday:'토요일', sunday:'일요일' };
+
+// ===== INIT =====
+window.onload = function() {
+  const saved = localStorage.getItem('sk_config');
+  if (saved) {
+    config = JSON.parse(saved);
+    document.getElementById('config-modal-bg').classList.remove('active');
+    loadFromGitHub();
+  }
+  // Init siege data structure
+  DAYS.forEach(d => {
+    if (!siegeData[d]) siegeData[d] = { topImage: null, slots: Array(5).fill(null).map(() => ({charId:null, comment:''})) };
+  });
+};
+
+// ===== CONFIG =====
+function saveConfig() {
+  const owner = document.getElementById('cfg-owner').value.trim();
+  const repo = document.getElementById('cfg-repo').value.trim();
+  const token = document.getElementById('cfg-token').value.trim();
+  if (!owner || !repo || !token) { showToast('모든 항목을 입력해주세요'); return; }
+  config = { owner, repo, token };
+  localStorage.setItem('sk_config', JSON.stringify(config));
+  document.getElementById('config-modal-bg').classList.remove('active');
+  loadFromGitHub();
+}
+
+// ===== GITHUB API =====
+async function githubRequest(path, method, body) {
+  const url = `https://api.github.com/repos/${config.owner}/${config.repo}/contents/${path}`;
+  const headers = {
+    'Authorization': `token ${config.token}`,
+    'Content-Type': 'application/json',
+    'Accept': 'application/vnd.github.v3+json'
+  };
+  const opts = { method, headers };
+  if (body) opts.body = JSON.stringify(body);
+  const res = await fetch(url, opts);
+  return res.ok ? res.json() : null;
+}
+
+async function loadFromGitHub() {
+  try {
+    // Load characters
+    const charFile = await githubRequest('data/characters.json', 'GET');
+    if (charFile && charFile.content) {
+      characters = JSON.parse(atob(charFile.content.replace(/\n/g,'')));
+    }
+    // Load siege data
+    const siegeFile = await githubRequest('data/siege.json', 'GET');
+    if (siegeFile && siegeFile.content) {
+      const loaded = JSON.parse(atob(siegeFile.content.replace(/\n/g,'')));
+      DAYS.forEach(d => {
+        if (loaded[d]) siegeData[d] = loaded[d];
+        else siegeData[d] = { topImage: null, slots: Array(5).fill(null).map(() => ({charId:null, comment:''})) };
+      });
+    }
+  } catch(e) {
+    console.log('First time - no data yet');
+  }
+}
+
+async function saveToGitHub(path, data) {
+  const content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
+  // Get current SHA if exists
+  const existing = await githubRequest(path, 'GET');
+  const sha = existing?.sha;
+  const body = {
+    message: `Update ${path}`,
+    content,
+    ...(sha ? { sha } : {})
+  };
+  await githubRequest(path, 'PUT', body);
+  showSaveIndicator();
+}
+
+async function saveCharacters() {
+  await saveToGitHub('data/characters.json', characters);
+}
+
+async function saveSiegeData() {
+  await saveToGitHub('data/siege.json', siegeData);
+}
+
+function showSaveIndicator() {
+  const el = document.getElementById('save-indicator');
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2000);
+}
+
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2500);
+}
+
+// ===== SCREENS =====
+function openScreen(id) {
+  document.getElementById(id).classList.add('active');
+}
+
+function closeScreen(id) {
+  document.getElementById(id).classList.remove('active');
+}
+
+function openSiegeScreen() {
+  openScreen('siege-screen');
+}
+
+function openCharEdit() {
+  renderCharGrid();
+  openScreen('char-edit-screen');
+}
+
+// ===== CHARACTER EDIT =====
+function renderCharGrid() {
+  const grid = document.getElementById('char-grid');
+  grid.innerHTML = '';
+  characters.forEach(char => {
+    const card = document.createElement('div');
+    card.className = 'char-card';
+    card.innerHTML = `
+      <img src="${char.imageData}" alt="${char.name}">
+      <div class="char-name-tag">${char.name}</div>
+      <div class="char-card-overlay">
+        <button class="overlay-btn edit" onclick="editCharacter('${char.id}');event.stopPropagation()">편집</button>
+        <button class="overlay-btn delete" onclick="deleteCharacter('${char.id}');event.stopPropagation()">삭제</button>
+      </div>
+    `;
+    card.onclick = () => card.classList.toggle('overlay-active');
+    grid.appendChild(card);
+  });
+  // Add button
+  const addCard = document.createElement('div');
+  addCard.className = 'add-char-card';
+  addCard.innerHTML = `<span>+</span><span>추가</span>`;
+  addCard.onclick = () => openCharModal(null);
+  grid.appendChild(addCard);
+}
+
+function openCharModal(charId) {
+  editingCharId = charId;
+  pendingCharImageData = null;
+  const modal = document.getElementById('char-modal-bg');
+  const title = document.getElementById('char-modal-title');
+  const nameInput = document.getElementById('char-name-input');
+  const imgUpload = document.getElementById('modal-img-upload');
+
+  if (charId) {
+    const char = characters.find(c => c.id === charId);
+    title.textContent = '캐릭터 편집';
+    nameInput.value = char.name;
+    imgUpload.innerHTML = `<img src="${char.imageData}" alt="${char.name}">`;
+    pendingCharImageData = char.imageData;
+  } else {
+    title.textContent = '캐릭터 추가';
+    nameInput.value = '';
+    imgUpload.innerHTML = `<div class="upload-placeholder"><span class="icon">📷</span><span>이미지 클릭하여 업로드</span></div>`;
+  }
+  modal.classList.add('active');
+}
+
+function editCharacter(id) {
+  document.querySelectorAll('.char-card').forEach(c => c.classList.remove('overlay-active'));
+  openCharModal(id);
+}
+
+function deleteCharacter(id) {
+  if (!confirm('이 캐릭터를 삭제하시겠습니까?')) return;
+  characters = characters.filter(c => c.id !== id);
+  saveCharacters();
+  renderCharGrid();
+}
+
+function closeCharModal() {
+  document.getElementById('char-modal-bg').classList.remove('active');
+}
+
+function handleCharImgUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    pendingCharImageData = e.target.result;
+    const imgUpload = document.getElementById('modal-img-upload');
+    imgUpload.innerHTML = `<img src="${pendingCharImageData}" alt="preview">`;
+  };
+  reader.readAsDataURL(file);
+}
+
+function saveCharacter() {
+  const name = document.getElementById('char-name-input').value.trim();
+  if (!name) { showToast('이름을 입력해주세요'); return; }
+  if (!pendingCharImageData) { showToast('이미지를 선택해주세요'); return; }
+
+  if (editingCharId) {
+    const char = characters.find(c => c.id === editingCharId);
+    char.name = name;
+    char.imageData = pendingCharImageData;
+  } else {
+    characters.push({ id: 'char_' + Date.now(), name, imageData: pendingCharImageData });
+  }
+  saveCharacters();
+  closeCharModal();
+  renderCharGrid();
+}
+
+// ===== DAY SCREEN =====
+function openDayScreen(day, label) {
+  currentDay = day;
+  document.getElementById('day-screen-title').textContent = label;
+  renderDayTopImage();
+  renderCharSlots();
+  openScreen('day-screen');
+}
+
+function renderDayTopImage() {
+  const container = document.getElementById('day-top-image');
+  const data = siegeData[currentDay];
+  if (data.topImage) {
+    container.innerHTML = `<img src="${data.topImage}" alt="top image">`;
+  } else {
+    container.innerHTML = `<div class="upload-hint"><span class="icon">🖼️</span><span>이미지를 추가하세요</span></div>`;
+  }
+}
+
+function triggerTopImageUpload() {
+  document.getElementById('top-img-input').click();
+}
+
+function handleTopImageUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    siegeData[currentDay].topImage = e.target.result;
+    renderDayTopImage();
+    saveSiegeData();
+  };
+  reader.readAsDataURL(file);
+  event.target.value = '';
+}
+
+function renderCharSlots() {
+  const list = document.getElementById('char-slot-list');
+  list.innerHTML = '';
+  const slots = siegeData[currentDay].slots;
+  slots.forEach((slot, idx) => {
+    const div = document.createElement('div');
+    div.className = 'char-slot';
+
+    const charArea = document.createElement('div');
+    charArea.className = 'slot-char-area';
+    charArea.onclick = () => openPickerModal(idx);
+
+    if (slot.charId) {
+      const char = characters.find(c => c.id === slot.charId);
+      if (char) {
+        charArea.innerHTML = `<img src="${char.imageData}" alt="${char.name}"><span class="slot-char-name">${char.name}</span>`;
+      } else {
+        charArea.innerHTML = `<span class="plus-icon">+</span>`;
+        slot.charId = null;
+      }
+    } else {
+      charArea.innerHTML = `<span class="plus-icon">+</span>`;
+    }
+
+    const textarea = document.createElement('textarea');
+    textarea.className = 'slot-comment';
+    textarea.placeholder = '코멘트를 입력하세요...';
+    textarea.value = slot.comment || '';
+    textarea.addEventListener('input', () => {
+      siegeData[currentDay].slots[idx].comment = textarea.value;
+      debounceSave();
+    });
+
+    div.appendChild(charArea);
+    div.appendChild(textarea);
+    list.appendChild(div);
+  });
+}
+
+let saveTimer = null;
+function debounceSave() {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => saveSiegeData(), 1500);
+}
+
+// ===== PICKER MODAL =====
+function openPickerModal(slotIdx) {
+  pickerTargetSlot = slotIdx;
+  pickerSelectedCharId = siegeData[currentDay].slots[slotIdx].charId;
+  const grid = document.getElementById('char-picker-grid');
+  grid.innerHTML = '';
+  if (characters.length === 0) {
+    grid.innerHTML = '<div style="color:var(--text-dim);font-size:13px;text-align:center;grid-column:1/-1;padding:20px;">등록된 캐릭터가 없습니다.<br>먼저 캐릭터를 추가해주세요.</div>';
+  } else {
+    characters.forEach(char => {
+      const card = document.createElement('div');
+      card.className = 'picker-card' + (char.id === pickerSelectedCharId ? ' selected' : '');
+      card.innerHTML = `<img src="${char.imageData}" alt="${char.name}"><div class="picker-name">${char.name}</div>`;
+      card.onclick = () => {
+        document.querySelectorAll('.picker-card').forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
+        pickerSelectedCharId = char.id;
+      };
+      grid.appendChild(card);
+    });
+  }
+  document.getElementById('picker-modal-bg').classList.add('active');
+}
+
+function closePickerModal() {
+  document.getElementById('picker-modal-bg').classList.remove('active');
+}
+
+function confirmPickerSelection() {
+  if (pickerSelectedCharId !== null && pickerTargetSlot !== null) {
+    siegeData[currentDay].slots[pickerTargetSlot].charId = pickerSelectedCharId;
+    saveSiegeData();
+    renderCharSlots();
+  }
+  closePickerModal();
+}
+</script>
+</body>
+</html>
