@@ -338,5 +338,10 @@
     "id": "char_1777007614371",
     "name": "제이브",
     "imageUrl": "https://raw.githubusercontent.com/ohorigi/project-sena/main/data/images/char_1777007612736.jpg?t=1777007614371"
+  },
+  {
+    "id": "char_1777007626583",
+    "name": "제인",
+    "imageUrl": "https://raw.githubusercontent.com/ohorigi/project-sena/main/data/images/char_1777007625144.jpg?t=1777007626583"
   }
 ]
