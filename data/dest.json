@@ -3,10 +3,6 @@
     {
       "id": "boss_1777004233547",
       "name": "4턴 빌드"
-    },
-    {
-      "id": "boss_1777018647136",
-      "name": "테스트"
     }
   ],
   "bossData": {
@@ -60,60 +56,6 @@
           {
             "charId": null,
             "comment": "복수자  // 치확치피 // 모공모공"
-          }
-        ]
-      }
-    },
-    "boss_1777018647136": {
-      "r1": {
-        "headerImageUrl": null,
-        "memo": "ㄱ\nㄱ\nㄱ\nㄴ\nㄴ\nㄴ\nㄴ",
-        "slots": [
-          {
-            "charId": "char_1777001601066",
-            "comment": ""
-          },
-          {
-            "charId": "char_1777001503158",
-            "comment": ""
-          },
-          {
-            "charId": null,
-            "comment": ""
-          },
-          {
-            "charId": null,
-            "comment": ""
-          },
-          {
-            "charId": null,
-            "comment": ""
-          }
-        ]
-      },
-      "r2": {
-        "headerImageUrl": null,
-        "memo": "",
-        "slots": [
-          {
-            "charId": null,
-            "comment": ""
-          },
-          {
-            "charId": null,
-            "comment": ""
-          },
-          {
-            "charId": null,
-            "comment": ""
-          },
-          {
-            "charId": null,
-            "comment": ""
-          },
-          {
-            "charId": null,
-            "comment": ""
           }
         ]
       }
