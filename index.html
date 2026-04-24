@@ -1378,7 +1378,7 @@ async function loadFromGitHub() {
     });
     if (res1.ok) {
       const file = await res1.json();
-      const jsonStr = decodeURIComponent(escape(atob(file.content.replace(/\n/g,''))));
+      const jsonStr = decodeURIComponent(escape(atob(file.content.replace(/\s/g,''))));
       characters = JSON.parse(jsonStr).map(c => ({ id: c.id, name: c.name, imageUrl: c.imageUrl || null }));
     }
 
@@ -1388,7 +1388,7 @@ async function loadFromGitHub() {
     });
     if (res2.ok) {
       const file = await res2.json();
-      const loaded = JSON.parse(decodeURIComponent(escape(atob(file.content.replace(/\n/g,'')))));
+      const loaded = JSON.parse(decodeURIComponent(escape(atob(file.content.replace(/\s/g,'')))));
       DAYS.forEach(d => {
         if (loaded[d]) {
           siegeData[d] = {
@@ -1407,7 +1407,7 @@ async function loadFromGitHub() {
     });
     if (res3.ok) {
       const file = await res3.json();
-      raidData = JSON.parse(decodeURIComponent(escape(atob(file.content.replace(/\n/g,'')))));
+      raidData = JSON.parse(decodeURIComponent(escape(atob(file.content.replace(/\s/g,'')))));
     } else {
       raidData = { bosses: [], bossData: {} };
       await saveToGitHub('data/raid.json', raidData);
@@ -1419,7 +1419,7 @@ async function loadFromGitHub() {
     });
     if (res4.ok) {
       const file = await res4.json();
-      destData = JSON.parse(decodeURIComponent(escape(atob(file.content.replace(/\n/g,'')))));
+      destData = JSON.parse(decodeURIComponent(escape(atob(file.content.replace(/\s/g,'')))));
     } else {
       destData = { bosses: [], bossData: {} };
       await saveToGitHub('data/dest.json', destData);
@@ -1507,12 +1507,10 @@ async function getFileSha(path) {
 
 async function saveToGitHub(path, data) {
   try {
-    // 한글 안깨지는 인코딩: TextEncoder 방식
+    // 가장 안정적인 한글+줄바꿈 인코딩 방식
     const jsonStr = JSON.stringify(data, null, 2);
-    const bytes = new TextEncoder().encode(jsonStr);
-    let binary = '';
-    bytes.forEach(b => binary += String.fromCharCode(b));
-    const content = btoa(binary);
+    // unescape+encodeURIComponent → 한글/줄바꿈 모두 처리
+    const content = btoa(unescape(encodeURIComponent(jsonStr)));
 
     const sha = await getFileSha(path);
     const body = {
@@ -1733,7 +1731,7 @@ function renderBossRoundScreen() {
     autoResize(memo);
     debounceBossSave();
   };
-  autoResize(memo);
+  setTimeout(() => autoResize(memo), 50);
 }
 
 function prevRound() {
@@ -2058,7 +2056,8 @@ function openDayScreen(day, label) {
     autoResize(memo);
     debounceSave();
   };
-  autoResize(memo);
+  // 로드 후 즉시 높이 적용 (setTimeout으로 렌더링 완료 후 실행)
+  setTimeout(() => autoResize(memo), 50);
   // 헤더 이미지 로드
   renderHeaderImage();
   openScreen('day-screen');
