@@ -110,7 +110,7 @@
   "friday": {
     "headerImageUrl": null,
     "topImageUrl": null,
-    "memo": "비1 타1 레1 라1 레2 타2 라2 타1 라1 타2 비1 레2 라2 타2 라1",
+    "memo": "비1 타1 레1 라1 레2 타2 라2 타1 라1 타2 비1 레2 라2 타2 라1\n",
     "slots": [
       {
         "charId": null,
