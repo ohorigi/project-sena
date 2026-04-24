@@ -8,7 +8,7 @@
   "bossData": {
     "boss_1777004233547": {
       "r1": {
-        "headerImageUrl": null,
+        "headerImageUrl": "https://raw.githubusercontent.com/ohorigi/project-sena/main/data/images/boss_boss_1777004233547_r1_1777012339269.jpg?t=1777012341112",
         "memo": "4턴 필수 조건 파스칼 모공 4500 치피336 약공 30이상\n약공 안 터질 시 소교 아래로 8턴에 넘어갈 수 있는 세팅\n\n소교2 - 파스칼2 ",
         "slots": [
           {
