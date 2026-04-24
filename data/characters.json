@@ -293,5 +293,10 @@
     "id": "char_1777007478503",
     "name": "엘리시아",
     "imageUrl": "https://raw.githubusercontent.com/ohorigi/project-sena/main/data/images/char_1777007476629.jpg?t=1777007478503"
+  },
+  {
+    "id": "char_1777007493224",
+    "name": "여포",
+    "imageUrl": "https://raw.githubusercontent.com/ohorigi/project-sena/main/data/images/char_1777007491292.jpg?t=1777007493224"
   }
 ]
