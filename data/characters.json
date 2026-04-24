@@ -453,5 +453,10 @@
     "id": "char_1777007928015",
     "name": "트루드",
     "imageUrl": "https://raw.githubusercontent.com/ohorigi/project-sena/main/data/images/char_1777007926092.jpg?t=1777007928015"
+  },
+  {
+    "id": "char_1777007951688",
+    "name": "팔라누스",
+    "imageUrl": "https://raw.githubusercontent.com/ohorigi/project-sena/main/data/images/char_1777007949956.jpg?t=1777007951688"
   }
 ]
