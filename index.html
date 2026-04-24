@@ -1232,19 +1232,19 @@ function makeEmptyBossData() {
 function updateBgImage() {
   const img = document.getElementById('bg-image');
   if (!img) return;
-  if (window.innerHeight > window.innerWidth) {
-    // 세로 모드
-    img.src = 'seven_knights_bg2.jpg';
-  } else {
-    // 가로 모드
-    img.src = 'seven_knights_bg.jpg';
+  const isPortrait = window.innerHeight > window.innerWidth;
+  const newSrc = isPortrait ? 'seven_knights_bg2.jpg' : 'seven_knights_bg.jpg';
+  if (img.src.indexOf(newSrc) === -1) {
+    img.src = newSrc;
   }
 }
 
-// 최초 실행 + 화면 회전 시 감지
-updateBgImage();
 window.addEventListener('resize', updateBgImage);
 window.addEventListener('orientationchange', updateBgImage);
+
+// ===== INIT =====
+window.onload = function() {
+  updateBgImage(); // DOM 준비 후 실행
   DAYS.forEach(d => {
     siegeData[d] = { headerImageUrl: null, topImageUrl: null, memo: '', slots: Array(5).fill(null).map(() => ({charId:null, comment:''})) };
   });
