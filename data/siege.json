@@ -1,11 +1,12 @@
 {
   "monday": {
+    "headerImageUrl": null,
     "topImageUrl": null,
     "memo": "",
     "slots": [
       {
         "charId": "char_1776992172645",
-        "comment": "뭐라고\n입력해야\n좋을까요."
+        "comment": "ë­ë¼ê³ \nìë ¥í´ì¼\nì¢ìê¹ì."
       },
       {
         "charId": null,
@@ -26,6 +27,7 @@
     ]
   },
   "tuesday": {
+    "headerImageUrl": null,
     "topImageUrl": null,
     "memo": "",
     "slots": [
@@ -52,6 +54,7 @@
     ]
   },
   "wednesday": {
+    "headerImageUrl": null,
     "topImageUrl": null,
     "memo": "",
     "slots": [
@@ -78,6 +81,7 @@
     ]
   },
   "thursday": {
+    "headerImageUrl": null,
     "topImageUrl": null,
     "memo": "",
     "slots": [
@@ -104,6 +108,7 @@
     ]
   },
   "friday": {
+    "headerImageUrl": null,
     "topImageUrl": null,
     "memo": "",
     "slots": [
@@ -130,6 +135,7 @@
     ]
   },
   "saturday": {
+    "headerImageUrl": null,
     "topImageUrl": null,
     "memo": "",
     "slots": [
@@ -156,6 +162,7 @@
     ]
   },
   "sunday": {
+    "headerImageUrl": null,
     "topImageUrl": null,
     "memo": "",
     "slots": [
