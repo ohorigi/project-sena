@@ -1018,6 +1018,7 @@ async function githubRequest(path, method, body) {
 }
 
 async function loadFromGitHub() {
+  showLoadingOverlay(true);
   try {
     // Load characters
     const charFile = await githubRequest('data/characters.json', 'GET');
@@ -1033,9 +1034,34 @@ async function loadFromGitHub() {
         else siegeData[d] = { topImage: null, slots: Array(5).fill(null).map(() => ({charId:null, comment:''})) };
       });
     }
+    showToast('✓ 데이터 로드 완료');
   } catch(e) {
-    console.log('First time - no data yet');
+    showToast('⚠️ 데이터 로드 실패: 설정을 확인해주세요');
+    console.error(e);
+  } finally {
+    showLoadingOverlay(false);
   }
+}
+
+function showLoadingOverlay(show) {
+  let overlay = document.getElementById('loading-overlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'loading-overlay';
+    overlay.style.cssText = `
+      position:fixed; top:0; left:0; width:100%; height:100%;
+      background:rgba(5,5,10,0.85); z-index:9999;
+      display:flex; flex-direction:column;
+      align-items:center; justify-content:center; gap:16px;
+    `;
+    overlay.innerHTML = `
+      <div style="width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin 0.8s linear infinite;"></div>
+      <div style="color:var(--gold-light);font-size:14px;letter-spacing:2px;">데이터 불러오는 중...</div>
+      <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+    `;
+    document.body.appendChild(overlay);
+  }
+  overlay.style.display = show ? 'flex' : 'none';
 }
 
 async function saveToGitHub(path, data) {
