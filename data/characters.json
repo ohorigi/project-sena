@@ -223,5 +223,10 @@
     "id": "char_1777006255334",
     "name": "스니퍼",
     "imageUrl": "https://raw.githubusercontent.com/ohorigi/project-sena/main/data/images/char_1777006253196.jpg?t=1777006255334"
+  },
+  {
+    "id": "char_1777006433429",
+    "name": "아리엘",
+    "imageUrl": "https://raw.githubusercontent.com/ohorigi/project-sena/main/data/images/char_1777006431628.jpg?t=1777006433429"
   }
 ]
