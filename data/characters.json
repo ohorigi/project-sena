@@ -228,5 +228,10 @@
     "id": "char_1777006433429",
     "name": "아리엘",
     "imageUrl": "https://raw.githubusercontent.com/ohorigi/project-sena/main/data/images/char_1777006431628.jpg?t=1777006433429"
+  },
+  {
+    "id": "char_1777006448134",
+    "name": "스파이크",
+    "imageUrl": "https://raw.githubusercontent.com/ohorigi/project-sena/main/data/images/char_1777006446109.jpg?t=1777006448134"
   }
 ]
