@@ -1158,6 +1158,11 @@
       <label>✦ 스킬 순서</label>
       <textarea id="boss-memo" placeholder="스킬 순서를 입력하세요..."></textarea>
     </div>
+    <div class="round-nav-row" id="round-nav-row">
+      <button class="round-arrow" id="round-prev-btn" onclick="prevRound()">◀</button>
+      <span class="round-label" id="round-label">1라운드</span>
+      <button class="round-arrow" id="round-next-btn" onclick="nextRound()">▶</button>
+    </div>
   </div>
 </div>
 <input type="file" id="boss-banner-input" accept="image/*" style="display:none" onchange="handleBossBannerUpload(event)">
@@ -1630,6 +1635,12 @@ function renderBossRoundScreen() {
   const data = getDataByMode(currentMode);
   const boss = data.bosses.find(b => b.id === currentBossId);
   document.getElementById('boss-screen-title').textContent = `${boss.name} - ${currentRound}라운드`;
+
+  // 라운드 네비 버튼 상태 업데이트
+  document.getElementById('round-label').textContent = `${currentRound}라운드`;
+  document.getElementById('round-prev-btn').className = `round-arrow${currentRound === 1 ? ' disabled' : ''}`;
+  document.getElementById('round-next-btn').className = `round-arrow${currentRound === 2 ? ' disabled' : ''}`;
+
   const rd = getBossRoundData();
   // 배너
   const bannerEl = document.getElementById('boss-banner-img');
@@ -1663,18 +1674,6 @@ function renderBossSlots() {
   list.innerHTML = '';
   const rd = getBossRoundData();
   rd.slots.forEach((slot, idx) => {
-    // 3번째 슬롯(idx=2) 앞에 라운드 이동 화살표 삽입
-    if (idx === 2) {
-      const navRow = document.createElement('div');
-      navRow.className = 'round-nav-row';
-      navRow.innerHTML = `
-        <button class="round-arrow ${currentRound === 1 ? 'disabled' : ''}" onclick="prevRound()">◀</button>
-        <span class="round-label">${currentRound}라운드</span>
-        <button class="round-arrow ${currentRound === 2 ? 'disabled' : ''}" onclick="nextRound()">▶</button>
-      `;
-      list.appendChild(navRow);
-    }
-
     const div = document.createElement('div');
     div.className = 'char-slot';
     const topRow = document.createElement('div');
