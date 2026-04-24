@@ -278,5 +278,10 @@
     "id": "char_1777007412499",
     "name": "에스파다",
     "imageUrl": "https://raw.githubusercontent.com/ohorigi/project-sena/main/data/images/char_1777007410953.jpg?t=1777007412499"
+  },
+  {
+    "id": "char_1777007430735",
+    "name": "에이스",
+    "imageUrl": "https://raw.githubusercontent.com/ohorigi/project-sena/main/data/images/char_1777007429125.jpg?t=1777007430735"
   }
 ]
