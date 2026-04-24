@@ -383,5 +383,10 @@
     "id": "char_1777007752686",
     "name": "초선",
     "imageUrl": "https://raw.githubusercontent.com/ohorigi/project-sena/main/data/images/char_1777007751038.jpg?t=1777007752686"
+  },
+  {
+    "id": "char_1777007764495",
+    "name": "카구라",
+    "imageUrl": "https://raw.githubusercontent.com/ohorigi/project-sena/main/data/images/char_1777007762721.jpg?t=1777007764495"
   }
 ]
