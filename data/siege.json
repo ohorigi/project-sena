@@ -1,19 +1,19 @@
 {
   "monday": {
-    "headerImageUrl": "https://raw.githubusercontent.com/ohorigi/project-sena/main/data/images/header_monday_1777012367926.jpg?t=1777012369340",
+    "headerImageUrl": "https://raw.githubusercontent.com/ohorigi/project-sena/main/data/images/header_monday_1777018506101.jpg?t=1777018508116",
     "topImageUrl": null,
     "memo": "",
     "slots": [
       {
-        "charId": null,
+        "charId": "char_1777006207139",
         "comment": ""
       },
       {
-        "charId": null,
+        "charId": "char_1777007399374",
         "comment": ""
       },
       {
-        "charId": null,
+        "charId": "char_1777001972108",
         "comment": ""
       },
       {
@@ -29,7 +29,7 @@
   "tuesday": {
     "headerImageUrl": "https://raw.githubusercontent.com/ohorigi/project-sena/main/data/images/header_tuesday_1777017952473.jpg?t=1777017954227",
     "topImageUrl": null,
-    "memo": "비스킷1 오공2 비스킷2 리나2 오공1 미호1 미호2 오공2 오공1\n비스킷2 비스킷1 미호1 오공2 미호2 오공1 리나2",
+    "memo": "비스킷1 오공2 비스킷2 리나2 오공1 미호1 미호2 오공2 오공1\n비스킷2 비스킷1 미호1 오공2 미호2 오공1 리나2 비스킷2 미호1\n오공2 오공1",
     "slots": [
       {
         "charId": "char_1777006207139",
