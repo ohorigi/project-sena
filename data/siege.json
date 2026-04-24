@@ -56,7 +56,7 @@
   "wednesday": {
     "headerImageUrl": "https://raw.githubusercontent.com/ohorigi/project-sena/main/data/images/header_wednesday_1777017580409.jpg?t=1777017582022",
     "topImageUrl": null,
-    "memo": "비스킷1 오공2 비스킷2 리나2 오공1 미호1 미호2 오공2 오공1 \n비스킷2 비스킷1 미호1 오공2() 오공2",
+    "memo": "비스킷1 오공2 비스킷2 리나2 오공1 미호1 미호2 오공2 오공1 \n비스킷2 비스킷1 미호1 오공2(스킬예약확인) 오공2",
     "slots": [
       {
         "charId": "char_1777006207139",
