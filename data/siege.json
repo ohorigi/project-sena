@@ -1,10 +1,11 @@
 {
   "monday": {
     "topImageUrl": null,
+    "memo": "",
     "slots": [
       {
         "charId": "char_1776992172645",
-        "comment": "testteset"
+        "comment": "뭐를\n입력해야\n좋을까요"
       },
       {
         "charId": null,
@@ -26,6 +27,7 @@
   },
   "tuesday": {
     "topImageUrl": null,
+    "memo": "",
     "slots": [
       {
         "charId": null,
@@ -51,6 +53,7 @@
   },
   "wednesday": {
     "topImageUrl": null,
+    "memo": "",
     "slots": [
       {
         "charId": null,
@@ -76,6 +79,7 @@
   },
   "thursday": {
     "topImageUrl": null,
+    "memo": "",
     "slots": [
       {
         "charId": null,
@@ -101,6 +105,7 @@
   },
   "friday": {
     "topImageUrl": null,
+    "memo": "",
     "slots": [
       {
         "charId": null,
@@ -126,6 +131,7 @@
   },
   "saturday": {
     "topImageUrl": null,
+    "memo": "",
     "slots": [
       {
         "charId": null,
@@ -151,6 +157,7 @@
   },
   "sunday": {
     "topImageUrl": null,
+    "memo": "",
     "slots": [
       {
         "charId": null,
