@@ -143,5 +143,10 @@
     "id": "char_1777001730693",
     "name": "발리스타",
     "imageUrl": "https://raw.githubusercontent.com/ohorigi/project-sena/main/data/images/char_1777001728478.jpg?t=1777001730693"
+  },
+  {
+    "id": "char_1777001756075",
+    "name": "백각",
+    "imageUrl": "https://raw.githubusercontent.com/ohorigi/project-sena/main/data/images/char_1777001754266.jpg?t=1777001756075"
   }
 ]
