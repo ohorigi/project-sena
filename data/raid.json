@@ -7,6 +7,10 @@
     {
       "id": "boss_1777000146732",
       "name": "태오"
+    },
+    {
+      "id": "boss_1777000150575",
+      "name": "카르마"
     }
   ],
   "bossData": {
@@ -65,6 +69,60 @@
       }
     },
     "boss_1777000146732": {
+      "r1": {
+        "headerImageUrl": null,
+        "memo": "",
+        "slots": [
+          {
+            "charId": null,
+            "comment": ""
+          },
+          {
+            "charId": null,
+            "comment": ""
+          },
+          {
+            "charId": null,
+            "comment": ""
+          },
+          {
+            "charId": null,
+            "comment": ""
+          },
+          {
+            "charId": null,
+            "comment": ""
+          }
+        ]
+      },
+      "r2": {
+        "headerImageUrl": null,
+        "memo": "",
+        "slots": [
+          {
+            "charId": null,
+            "comment": ""
+          },
+          {
+            "charId": null,
+            "comment": ""
+          },
+          {
+            "charId": null,
+            "comment": ""
+          },
+          {
+            "charId": null,
+            "comment": ""
+          },
+          {
+            "charId": null,
+            "comment": ""
+          }
+        ]
+      }
+    },
+    "boss_1777000150575": {
       "r1": {
         "headerImageUrl": null,
         "memo": "",
