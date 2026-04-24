@@ -188,5 +188,15 @@
     "id": "char_1777004394227",
     "name": "사라",
     "imageUrl": "https://raw.githubusercontent.com/ohorigi/project-sena/main/data/images/char_1777004392664.jpg?t=1777004394227"
+  },
+  {
+    "id": "char_1777004426223",
+    "name": "성진우",
+    "imageUrl": "https://raw.githubusercontent.com/ohorigi/project-sena/main/data/images/char_1777004424722.jpg?t=1777004426223"
+  },
+  {
+    "id": "char_1777004454064",
+    "name": "세라",
+    "imageUrl": "https://raw.githubusercontent.com/ohorigi/project-sena/main/data/images/char_1777004452078.jpg?t=1777004454064"
   }
 ]
