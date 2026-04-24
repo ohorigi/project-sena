@@ -298,5 +298,10 @@
     "id": "char_1777007493224",
     "name": "여포",
     "imageUrl": "https://raw.githubusercontent.com/ohorigi/project-sena/main/data/images/char_1777007491292.jpg?t=1777007493224"
+  },
+  {
+    "id": "char_1777007520292",
+    "name": "연희",
+    "imageUrl": "https://raw.githubusercontent.com/ohorigi/project-sena/main/data/images/char_1777007518169.jpg?t=1777007520292"
   }
 ]
