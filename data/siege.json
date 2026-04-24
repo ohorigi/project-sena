@@ -1,1 +1,177 @@
-{}
+{
+  "monday": {
+    "topImage": null,
+    "slots": [
+      {
+        "charId": "char_1776990455775",
+        "comment": ""
+      },
+      {
+        "charId": null,
+        "comment": ""
+      },
+      {
+        "charId": null,
+        "comment": ""
+      },
+      {
+        "charId": null,
+        "comment": ""
+      },
+      {
+        "charId": null,
+        "comment": ""
+      }
+    ]
+  },
+  "tuesday": {
+    "topImage": null,
+    "slots": [
+      {
+        "charId": null,
+        "comment": ""
+      },
+      {
+        "charId": null,
+        "comment": ""
+      },
+      {
+        "charId": null,
+        "comment": ""
+      },
+      {
+        "charId": null,
+        "comment": ""
+      },
+      {
+        "charId": null,
+        "comment": ""
+      }
+    ]
+  },
+  "wednesday": {
+    "topImage": null,
+    "slots": [
+      {
+        "charId": null,
+        "comment": ""
+      },
+      {
+        "charId": null,
+        "comment": ""
+      },
+      {
+        "charId": null,
+        "comment": ""
+      },
+      {
+        "charId": null,
+        "comment": ""
+      },
+      {
+        "charId": null,
+        "comment": ""
+      }
+    ]
+  },
+  "thursday": {
+    "topImage": null,
+    "slots": [
+      {
+        "charId": null,
+        "comment": ""
+      },
+      {
+        "charId": null,
+        "comment": ""
+      },
+      {
+        "charId": null,
+        "comment": ""
+      },
+      {
+        "charId": null,
+        "comment": ""
+      },
+      {
+        "charId": null,
+        "comment": ""
+      }
+    ]
+  },
+  "friday": {
+    "topImage": null,
+    "slots": [
+      {
+        "charId": null,
+        "comment": ""
+      },
+      {
+        "charId": null,
+        "comment": ""
+      },
+      {
+        "charId": null,
+        "comment": ""
+      },
+      {
+        "charId": null,
+        "comment": ""
+      },
+      {
+        "charId": null,
+        "comment": ""
+      }
+    ]
+  },
+  "saturday": {
+    "topImage": null,
+    "slots": [
+      {
+        "charId": null,
+        "comment": ""
+      },
+      {
+        "charId": null,
+        "comment": ""
+      },
+      {
+        "charId": null,
+        "comment": ""
+      },
+      {
+        "charId": null,
+        "comment": ""
+      },
+      {
+        "charId": null,
+        "comment": ""
+      }
+    ]
+  },
+  "sunday": {
+    "topImage": null,
+    "slots": [
+      {
+        "charId": null,
+        "comment": ""
+      },
+      {
+        "charId": null,
+        "comment": ""
+      },
+      {
+        "charId": null,
+        "comment": ""
+      },
+      {
+        "charId": null,
+        "comment": ""
+      },
+      {
+        "charId": null,
+        "comment": ""
+      }
+    ]
+  }
+}
