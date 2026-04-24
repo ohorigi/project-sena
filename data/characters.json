@@ -178,5 +178,10 @@
     "id": "char_1777001972108",
     "name": "비스킷",
     "imageUrl": "https://raw.githubusercontent.com/ohorigi/project-sena/main/data/images/char_1777001970155.jpg?t=1777001972108"
+  },
+  {
+    "id": "char_1777004365090",
+    "name": "빅토리아",
+    "imageUrl": "https://raw.githubusercontent.com/ohorigi/project-sena/main/data/images/char_1777004363109.jpg?t=1777004365090"
   }
 ]
