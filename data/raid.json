@@ -1,4 +1,64 @@
 {
-  "bosses": [],
-  "bossData": {}
+  "bosses": [
+    {
+      "id": "boss_1776995253047",
+      "name": "연희"
+    }
+  ],
+  "bossData": {
+    "boss_1776995253047": {
+      "r1": {
+        "headerImageUrl": null,
+        "memo": "",
+        "slots": [
+          {
+            "charId": null,
+            "comment": ""
+          },
+          {
+            "charId": null,
+            "comment": ""
+          },
+          {
+            "charId": null,
+            "comment": ""
+          },
+          {
+            "charId": null,
+            "comment": ""
+          },
+          {
+            "charId": null,
+            "comment": ""
+          }
+        ]
+      },
+      "r2": {
+        "headerImageUrl": null,
+        "memo": "",
+        "slots": [
+          {
+            "charId": null,
+            "comment": ""
+          },
+          {
+            "charId": null,
+            "comment": ""
+          },
+          {
+            "charId": null,
+            "comment": ""
+          },
+          {
+            "charId": null,
+            "comment": ""
+          },
+          {
+            "charId": null,
+            "comment": ""
+          }
+        ]
+      }
+    }
+  }
 }
