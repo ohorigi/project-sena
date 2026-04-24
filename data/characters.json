@@ -158,5 +158,10 @@
     "id": "char_1777001817996",
     "name": "벨리카",
     "imageUrl": "https://raw.githubusercontent.com/ohorigi/project-sena/main/data/images/char_1777001816393.jpg?t=1777001817996"
+  },
+  {
+    "id": "char_1777001845224",
+    "name": "브란즈&브란셀",
+    "imageUrl": "https://raw.githubusercontent.com/ohorigi/project-sena/main/data/images/char_1777001843054.jpg?t=1777001845224"
   }
 ]
