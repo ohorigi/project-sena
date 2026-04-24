@@ -183,5 +183,10 @@
     "id": "char_1777004365090",
     "name": "빅토리아",
     "imageUrl": "https://raw.githubusercontent.com/ohorigi/project-sena/main/data/images/char_1777004363109.jpg?t=1777004365090"
+  },
+  {
+    "id": "char_1777004394227",
+    "name": "사라",
+    "imageUrl": "https://raw.githubusercontent.com/ohorigi/project-sena/main/data/images/char_1777004392664.jpg?t=1777004394227"
   }
 ]
