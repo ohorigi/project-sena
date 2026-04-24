@@ -565,24 +565,30 @@
   .char-slot-list {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 20px;
   }
 
+  /* 슬롯 전체를 세로로 크게 */
   .char-slot {
     display: flex;
-    align-items: center;
-    gap: 12px;
+    flex-direction: column;
+    gap: 10px;
     background: var(--dark3);
     border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 10px;
-    min-height: 72px;
+    border-radius: 8px;
+    padding: 14px;
+  }
+
+  .slot-top-row {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
   }
 
   .slot-char-area {
-    width: 52px;
-    height: 52px;
-    border-radius: 4px;
+    width: 90px;
+    height: 90px;
+    border-radius: 6px;
     border: 1px dashed var(--border);
     display: flex;
     flex-direction: column;
@@ -601,11 +607,12 @@
   }
 
   .slot-char-name {
-    font-size: 9px;
-    color: var(--text-dim);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text);
     text-align: center;
     width: 100%;
-    padding: 2px 1px;
+    padding: 3px 2px;
     background: var(--dark3);
     height: 25%;
     display: flex;
@@ -615,7 +622,7 @@
   }
 
   .slot-char-area .plus-icon {
-    font-size: 22px;
+    font-size: 28px;
     color: var(--text-dim);
   }
 
@@ -624,21 +631,53 @@
   }
 
   .slot-comment {
-    flex: 1;
+    width: 100%;
     background: var(--dark);
     border: 1px solid var(--border);
     border-radius: 4px;
     color: var(--text);
     font-family: 'Noto Sans KR', sans-serif;
-    font-size: 13px;
-    padding: 8px 10px;
+    font-size: 14px;
+    padding: 10px 12px;
     resize: none;
-    height: 52px;
+    height: 70px;
     outline: none;
     transition: border-color 0.2s;
   }
   .slot-comment:focus { border-color: var(--gold); }
-  .slot-comment::placeholder { color: var(--text-dim); font-size: 12px; }
+  .slot-comment::placeholder { color: var(--text-dim); font-size: 13px; }
+
+  /* 하단 메모 영역 */
+  .day-bottom-memo {
+    margin-top: 24px;
+    margin-bottom: 30px;
+  }
+
+  .day-bottom-memo label {
+    display: block;
+    font-size: 12px;
+    color: var(--gold);
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+  }
+
+  .day-bottom-memo textarea {
+    width: 100%;
+    background: var(--dark3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 14px;
+    padding: 14px;
+    resize: none;
+    height: 120px;
+    outline: none;
+    transition: border-color 0.2s;
+    line-height: 1.6;
+  }
+  .day-bottom-memo textarea:focus { border-color: var(--gold); }
+  .day-bottom-memo textarea::placeholder { color: var(--text-dim); }
 
   /* Character Picker Modal */
   .char-picker-grid {
@@ -860,19 +899,12 @@
   <div class="screen-header">
     <button class="back-btn" onclick="closeScreen('day-screen')">‹</button>
     <div class="screen-title" id="day-screen-title">월요일</div>
-    <div style="margin-left:auto">
-      <button onclick="triggerTopImageUpload()" style="background:none;border:1px solid var(--border);border-radius:4px;color:var(--text-dim);font-size:11px;padding:6px 10px;cursor:pointer;letter-spacing:1px;">🖼️ 이미지</button>
-    </div>
   </div>
   <div class="screen-body">
-    <div class="day-top-image" id="day-top-image" onclick="triggerTopImageUpload()">
-      <div class="upload-hint">
-        <span class="icon">🖼️</span>
-        <span>이미지를 추가하세요</span>
-      </div>
-    </div>
-    <div class="char-slot-list" id="char-slot-list">
-      <!-- 5 slots rendered by JS -->
+    <div class="char-slot-list" id="char-slot-list"></div>
+    <div class="day-bottom-memo">
+      <label>✦ 메모</label>
+      <textarea id="day-memo" placeholder="공략 메모, 주의사항 등을 자유롭게 입력하세요..."></textarea>
     </div>
   </div>
 </div>
@@ -1042,6 +1074,7 @@ async function loadFromGitHub() {
         if (loaded[d]) {
           siegeData[d] = {
             topImageUrl: loaded[d].topImageUrl || null,
+            memo: loaded[d].memo || '',
             slots: loaded[d].slots || Array(5).fill(null).map(() => ({charId:null, comment:''}))
           };
         }
@@ -1171,11 +1204,12 @@ async function saveCharacters() {
 }
 
 async function saveSiegeData() {
-  // 이미지 URL만 저장
+  // 이미지 URL + 슬롯 + 메모 저장
   const toSave = {};
   DAYS.forEach(d => {
     toSave[d] = {
       topImageUrl: siegeData[d].topImageUrl || null,
+      memo: siegeData[d].memo || '',
       slots: siegeData[d].slots.map(s => ({ charId: s.charId, comment: s.comment }))
     };
   });
@@ -1306,7 +1340,8 @@ function handleCharImgUpload(event) {
   const file = event.target.files[0];
   if (!file) return;
   showToast('이미지 압축 중...');
-  compressImage(file, 300, 400, 0.75).then(compressed => {
+  // 화질 개선: 600x800, 품질 0.92
+  compressImage(file, 600, 800, 0.92).then(compressed => {
     pendingCharImageData = compressed;
     const imgUpload = document.getElementById('modal-img-upload');
     imgUpload.innerHTML = `<img src="${compressed}" alt="preview">`;
@@ -1348,44 +1383,15 @@ async function saveCharacter() {
 function openDayScreen(day, label) {
   currentDay = day;
   document.getElementById('day-screen-title').textContent = label;
-  renderDayTopImage();
   renderCharSlots();
+  // 메모 로드
+  const memo = document.getElementById('day-memo');
+  memo.value = siegeData[currentDay].memo || '';
+  memo.oninput = () => {
+    siegeData[currentDay].memo = memo.value;
+    debounceSave();
+  };
   openScreen('day-screen');
-}
-
-function renderDayTopImage() {
-  const container = document.getElementById('day-top-image');
-  const data = siegeData[currentDay];
-  const src = data.topImageUrl || null;
-  if (src) {
-    container.innerHTML = `<img src="${src}?t=${Date.now()}" alt="top image">`;
-  } else {
-    container.innerHTML = `<div class="upload-hint"><span class="icon">🖼️</span><span>이미지를 추가하세요</span></div>`;
-  }
-}
-
-function triggerTopImageUpload() {
-  document.getElementById('top-img-input').click();
-}
-
-function handleTopImageUpload(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  showToast('이미지 업로드 중...');
-  compressImage(file, 800, 350, 0.75).then(async compressed => {
-    showLoadingOverlay(true);
-    try {
-      const filename = `siege_${currentDay}_${Date.now()}.jpg`;
-      const imageUrl = await saveImageToGitHub(compressed, filename);
-      if (!imageUrl) { showToast('⚠️ 이미지 업로드 실패'); return; }
-      siegeData[currentDay].topImageUrl = imageUrl;
-      renderDayTopImage();
-      await saveSiegeData();
-    } finally {
-      showLoadingOverlay(false);
-    }
-  });
-  event.target.value = '';
 }
 
 function renderCharSlots() {
@@ -1395,6 +1401,10 @@ function renderCharSlots() {
   slots.forEach((slot, idx) => {
     const div = document.createElement('div');
     div.className = 'char-slot';
+
+    // 상단 행: 캐릭터 이미지 + 코멘트
+    const topRow = document.createElement('div');
+    topRow.className = 'slot-top-row';
 
     const charArea = document.createElement('div');
     charArea.className = 'slot-char-area';
@@ -1413,6 +1423,13 @@ function renderCharSlots() {
       charArea.innerHTML = `<span class="plus-icon">+</span>`;
     }
 
+    const commentBox = document.createElement('div');
+    commentBox.style.cssText = 'flex:1; display:flex; flex-direction:column; gap:6px;';
+
+    const slotLabel = document.createElement('div');
+    slotLabel.style.cssText = 'font-size:11px; color:var(--gold); letter-spacing:1px;';
+    slotLabel.textContent = `캐릭터 ${idx + 1}`;
+
     const textarea = document.createElement('textarea');
     textarea.className = 'slot-comment';
     textarea.placeholder = '코멘트를 입력하세요...';
@@ -1422,8 +1439,11 @@ function renderCharSlots() {
       debounceSave();
     });
 
-    div.appendChild(charArea);
-    div.appendChild(textarea);
+    commentBox.appendChild(slotLabel);
+    commentBox.appendChild(textarea);
+    topRow.appendChild(charArea);
+    topRow.appendChild(commentBox);
+    div.appendChild(topRow);
     list.appendChild(div);
   });
 }
