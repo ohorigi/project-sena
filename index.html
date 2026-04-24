@@ -1162,16 +1162,43 @@ function closeCharModal() {
   document.getElementById('char-modal-bg').classList.remove('active');
 }
 
+// ===== 이미지 압축 함수 =====
+// maxWidth/maxHeight: 최대 크기(px), quality: 0~1 (JPEG 품질)
+function compressImage(file, maxWidth, maxHeight, quality) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let w = img.width, h = img.height;
+        // 비율 유지하며 축소
+        if (w > maxWidth || h > maxHeight) {
+          const ratio = Math.min(maxWidth / w, maxHeight / h);
+          w = Math.round(w * ratio);
+          h = Math.round(h * ratio);
+        }
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
 function handleCharImgUpload(event) {
   const file = event.target.files[0];
   if (!file) return;
-  const reader = new FileReader();
-  reader.onload = e => {
-    pendingCharImageData = e.target.result;
+  // 캐릭터 이미지: 300x400px, 품질 0.75로 압축
+  compressImage(file, 300, 400, 0.75).then(compressed => {
+    pendingCharImageData = compressed;
     const imgUpload = document.getElementById('modal-img-upload');
     imgUpload.innerHTML = `<img src="${pendingCharImageData}" alt="preview">`;
-  };
-  reader.readAsDataURL(file);
+  });
 }
 
 function saveCharacter() {
@@ -1217,13 +1244,12 @@ function triggerTopImageUpload() {
 function handleTopImageUpload(event) {
   const file = event.target.files[0];
   if (!file) return;
-  const reader = new FileReader();
-  reader.onload = e => {
-    siegeData[currentDay].topImage = e.target.result;
+  // 상단 이미지: 800x350px, 품질 0.75로 압축
+  compressImage(file, 800, 350, 0.75).then(compressed => {
+    siegeData[currentDay].topImage = compressed;
     renderDayTopImage();
     saveSiegeData();
-  };
-  reader.readAsDataURL(file);
+  });
   event.target.value = '';
 }
 
