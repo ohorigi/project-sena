@@ -1020,23 +1020,36 @@ async function githubRequest(path, method, body) {
 async function loadFromGitHub() {
   showLoadingOverlay(true);
   try {
-    // Load characters
-    const charFile = await githubRequest('data/characters.json', 'GET');
-    if (charFile && charFile.content) {
-      characters = JSON.parse(atob(charFile.content.replace(/\n/g,'')));
+    // 캐릭터 로드
+    const res1 = await fetch(`https://api.github.com/repos/${config.owner}/${config.repo}/contents/data/characters.json`, {
+      headers: { 'Authorization': `token ${config.token}`, 'Accept': 'application/vnd.github.v3+json' }
+    });
+    if (res1.ok) {
+      const file = await res1.json();
+      const loaded = JSON.parse(atob(file.content.replace(/\n/g,'')));
+      // imageUrl 기반으로 로드
+      characters = loaded.map(c => ({ id: c.id, name: c.name, imageUrl: c.imageUrl || null }));
     }
-    // Load siege data
-    const siegeFile = await githubRequest('data/siege.json', 'GET');
-    if (siegeFile && siegeFile.content) {
-      const loaded = JSON.parse(atob(siegeFile.content.replace(/\n/g,'')));
+
+    // 공성전 데이터 로드
+    const res2 = await fetch(`https://api.github.com/repos/${config.owner}/${config.repo}/contents/data/siege.json`, {
+      headers: { 'Authorization': `token ${config.token}`, 'Accept': 'application/vnd.github.v3+json' }
+    });
+    if (res2.ok) {
+      const file = await res2.json();
+      const loaded = JSON.parse(atob(file.content.replace(/\n/g,'')));
       DAYS.forEach(d => {
-        if (loaded[d]) siegeData[d] = loaded[d];
-        else siegeData[d] = { topImage: null, slots: Array(5).fill(null).map(() => ({charId:null, comment:''})) };
+        if (loaded[d]) {
+          siegeData[d] = {
+            topImageUrl: loaded[d].topImageUrl || null,
+            slots: loaded[d].slots || Array(5).fill(null).map(() => ({charId:null, comment:''}))
+          };
+        }
       });
     }
     showToast('✓ 데이터 로드 완료');
   } catch(e) {
-    showToast('⚠️ 데이터 로드 실패: 설정을 확인해주세요');
+    showToast('⚠️ 로드 실패: ' + e.message);
     console.error(e);
   } finally {
     showLoadingOverlay(false);
@@ -1064,33 +1077,109 @@ function showLoadingOverlay(show) {
   overlay.style.display = show ? 'flex' : 'none';
 }
 
+// 이미지를 GitHub에 별도 파일로 저장, 경로 반환
+async function saveImageToGitHub(imageData, filename) {
+  try {
+    // base64 헤더 제거 (data:image/jpeg;base64, 부분)
+    const base64 = imageData.split(',')[1];
+    const path = `data/images/${filename}`;
+    const sha = await getFileSha(path);
+    const body = {
+      message: `Upload image ${filename}`,
+      content: base64,
+      ...(sha ? { sha } : {})
+    };
+    const url = `https://api.github.com/repos/${config.owner}/${config.repo}/contents/${path}`;
+    const res = await fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `token ${config.token}`,
+        'Content-Type': 'application/json',
+        'Accept': 'application/vnd.github.v3+json'
+      },
+      body: JSON.stringify(body)
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      console.error('이미지 저장 실패:', err);
+      return null;
+    }
+    // GitHub Raw URL 반환
+    return `https://raw.githubusercontent.com/${config.owner}/${config.repo}/main/data/images/${filename}`;
+  } catch(e) {
+    console.error('이미지 저장 오류:', e);
+    return null;
+  }
+}
+
+async function getFileSha(path) {
+  try {
+    const res = await fetch(`https://api.github.com/repos/${config.owner}/${config.repo}/contents/${path}`, {
+      headers: {
+        'Authorization': `token ${config.token}`,
+        'Accept': 'application/vnd.github.v3+json'
+      }
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data.sha || null;
+  } catch { return null; }
+}
+
 async function saveToGitHub(path, data) {
   try {
     const content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
-    const existing = await githubRequest(path, 'GET');
-    const sha = existing?.sha;
+    const sha = await getFileSha(path);
     const body = {
       message: `Update ${path}`,
       content,
       ...(sha ? { sha } : {})
     };
-    const result = await githubRequest(path, 'PUT', body);
-    if (result) {
-      showSaveIndicator();
-    } else {
-      showToast('⚠️ 저장 실패! 설정을 확인해주세요');
+    const url = `https://api.github.com/repos/${config.owner}/${config.repo}/contents/${path}`;
+    const res = await fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `token ${config.token}`,
+        'Content-Type': 'application/json',
+        'Accept': 'application/vnd.github.v3+json'
+      },
+      body: JSON.stringify(body)
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      showToast('⚠️ 저장 실패: ' + (err.message || res.status));
+      console.error('저장 실패:', err);
+      return false;
     }
+    showSaveIndicator();
+    return true;
   } catch(e) {
-    showToast('⚠️ 저장 실패: ' + e.message);
+    showToast('⚠️ 저장 오류: ' + e.message);
+    console.error(e);
+    return false;
   }
 }
 
 async function saveCharacters() {
-  await saveToGitHub('data/characters.json', characters);
+  // 이미지 URL만 저장 (base64 제외)
+  const toSave = characters.map(c => ({
+    id: c.id,
+    name: c.name,
+    imageUrl: c.imageUrl || null
+  }));
+  await saveToGitHub('data/characters.json', toSave);
 }
 
 async function saveSiegeData() {
-  await saveToGitHub('data/siege.json', siegeData);
+  // 이미지 URL만 저장
+  const toSave = {};
+  DAYS.forEach(d => {
+    toSave[d] = {
+      topImageUrl: siegeData[d].topImageUrl || null,
+      slots: siegeData[d].slots.map(s => ({ charId: s.charId, comment: s.comment }))
+    };
+  });
+  await saveToGitHub('data/siege.json', toSave);
 }
 
 function showSaveIndicator() {
@@ -1131,8 +1220,9 @@ function renderCharGrid() {
   characters.forEach(char => {
     const card = document.createElement('div');
     card.className = 'char-card';
+    const imgSrc = char.imageUrl || char.imageData || '';
     card.innerHTML = `
-      <img src="${char.imageData}" alt="${char.name}">
+      <img src="${imgSrc}" alt="${char.name}">
       <div class="char-name-tag">${char.name}</div>
       <div class="char-card-overlay">
         <button class="overlay-btn edit" onclick="editCharacter('${char.id}');event.stopPropagation()">편집</button>
@@ -1142,7 +1232,6 @@ function renderCharGrid() {
     card.onclick = () => card.classList.toggle('overlay-active');
     grid.appendChild(card);
   });
-  // Add button
   const addCard = document.createElement('div');
   addCard.className = 'add-char-card';
   addCard.innerHTML = `<span>+</span><span>추가</span>`;
@@ -1189,7 +1278,6 @@ function closeCharModal() {
 }
 
 // ===== 이미지 압축 함수 =====
-// maxWidth/maxHeight: 최대 크기(px), quality: 0~1 (JPEG 품질)
 function compressImage(file, maxWidth, maxHeight, quality) {
   return new Promise((resolve) => {
     const reader = new FileReader();
@@ -1198,7 +1286,6 @@ function compressImage(file, maxWidth, maxHeight, quality) {
       img.onload = () => {
         const canvas = document.createElement('canvas');
         let w = img.width, h = img.height;
-        // 비율 유지하며 축소
         if (w > maxWidth || h > maxHeight) {
           const ratio = Math.min(maxWidth / w, maxHeight / h);
           w = Math.round(w * ratio);
@@ -1206,8 +1293,7 @@ function compressImage(file, maxWidth, maxHeight, quality) {
         }
         canvas.width = w;
         canvas.height = h;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0, w, h);
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
         resolve(canvas.toDataURL('image/jpeg', quality));
       };
       img.src = e.target.result;
@@ -1219,29 +1305,43 @@ function compressImage(file, maxWidth, maxHeight, quality) {
 function handleCharImgUpload(event) {
   const file = event.target.files[0];
   if (!file) return;
-  // 캐릭터 이미지: 300x400px, 품질 0.75로 압축
+  showToast('이미지 압축 중...');
   compressImage(file, 300, 400, 0.75).then(compressed => {
     pendingCharImageData = compressed;
     const imgUpload = document.getElementById('modal-img-upload');
-    imgUpload.innerHTML = `<img src="${pendingCharImageData}" alt="preview">`;
+    imgUpload.innerHTML = `<img src="${compressed}" alt="preview">`;
   });
 }
 
-function saveCharacter() {
+async function saveCharacter() {
   const name = document.getElementById('char-name-input').value.trim();
   if (!name) { showToast('이름을 입력해주세요'); return; }
   if (!pendingCharImageData) { showToast('이미지를 선택해주세요'); return; }
 
-  if (editingCharId) {
-    const char = characters.find(c => c.id === editingCharId);
-    char.name = name;
-    char.imageData = pendingCharImageData;
-  } else {
-    characters.push({ id: 'char_' + Date.now(), name, imageData: pendingCharImageData });
+  showLoadingOverlay(true);
+  try {
+    // 이미지를 GitHub에 파일로 업로드
+    const filename = `char_${Date.now()}.jpg`;
+    const imageUrl = await saveImageToGitHub(pendingCharImageData, filename);
+    if (!imageUrl) {
+      showToast('⚠️ 이미지 업로드 실패');
+      showLoadingOverlay(false);
+      return;
+    }
+
+    if (editingCharId) {
+      const char = characters.find(c => c.id === editingCharId);
+      char.name = name;
+      char.imageUrl = imageUrl;
+    } else {
+      characters.push({ id: 'char_' + Date.now(), name, imageUrl });
+    }
+    await saveCharacters();
+    closeCharModal();
+    renderCharGrid();
+  } finally {
+    showLoadingOverlay(false);
   }
-  saveCharacters();
-  closeCharModal();
-  renderCharGrid();
 }
 
 // ===== DAY SCREEN =====
@@ -1256,8 +1356,9 @@ function openDayScreen(day, label) {
 function renderDayTopImage() {
   const container = document.getElementById('day-top-image');
   const data = siegeData[currentDay];
-  if (data.topImage) {
-    container.innerHTML = `<img src="${data.topImage}" alt="top image">`;
+  const src = data.topImageUrl || null;
+  if (src) {
+    container.innerHTML = `<img src="${src}?t=${Date.now()}" alt="top image">`;
   } else {
     container.innerHTML = `<div class="upload-hint"><span class="icon">🖼️</span><span>이미지를 추가하세요</span></div>`;
   }
@@ -1270,11 +1371,19 @@ function triggerTopImageUpload() {
 function handleTopImageUpload(event) {
   const file = event.target.files[0];
   if (!file) return;
-  // 상단 이미지: 800x350px, 품질 0.75로 압축
-  compressImage(file, 800, 350, 0.75).then(compressed => {
-    siegeData[currentDay].topImage = compressed;
-    renderDayTopImage();
-    saveSiegeData();
+  showToast('이미지 업로드 중...');
+  compressImage(file, 800, 350, 0.75).then(async compressed => {
+    showLoadingOverlay(true);
+    try {
+      const filename = `siege_${currentDay}_${Date.now()}.jpg`;
+      const imageUrl = await saveImageToGitHub(compressed, filename);
+      if (!imageUrl) { showToast('⚠️ 이미지 업로드 실패'); return; }
+      siegeData[currentDay].topImageUrl = imageUrl;
+      renderDayTopImage();
+      await saveSiegeData();
+    } finally {
+      showLoadingOverlay(false);
+    }
   });
   event.target.value = '';
 }
@@ -1294,7 +1403,8 @@ function renderCharSlots() {
     if (slot.charId) {
       const char = characters.find(c => c.id === slot.charId);
       if (char) {
-        charArea.innerHTML = `<img src="${char.imageData}" alt="${char.name}"><span class="slot-char-name">${char.name}</span>`;
+        const imgSrc = char.imageUrl || char.imageData || '';
+        charArea.innerHTML = `<img src="${imgSrc}" alt="${char.name}"><span class="slot-char-name">${char.name}</span>`;
       } else {
         charArea.innerHTML = `<span class="plus-icon">+</span>`;
         slot.charId = null;
@@ -1324,7 +1434,6 @@ function debounceSave() {
   saveTimer = setTimeout(() => saveSiegeData(), 1500);
 }
 
-// ===== PICKER MODAL =====
 function openPickerModal(slotIdx) {
   pickerTargetSlot = slotIdx;
   pickerSelectedCharId = siegeData[currentDay].slots[slotIdx].charId;
@@ -1336,7 +1445,8 @@ function openPickerModal(slotIdx) {
     characters.forEach(char => {
       const card = document.createElement('div');
       card.className = 'picker-card' + (char.id === pickerSelectedCharId ? ' selected' : '');
-      card.innerHTML = `<img src="${char.imageData}" alt="${char.name}"><div class="picker-name">${char.name}</div>`;
+      const imgSrc = char.imageUrl || char.imageData || '';
+      card.innerHTML = `<img src="${imgSrc}" alt="${char.name}"><div class="picker-name">${char.name}</div>`;
       card.onclick = () => {
         document.querySelectorAll('.picker-card').forEach(c => c.classList.remove('selected'));
         card.classList.add('selected');
