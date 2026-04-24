@@ -3,6 +3,10 @@
     {
       "id": "boss_1776996239903",
       "name": "승재"
+    },
+    {
+      "id": "boss_1777004233547",
+      "name": "4턴 빌드"
     }
   ],
   "bossData": {
@@ -13,6 +17,60 @@
         "slots": [
           {
             "charId": "char_1776998728564",
+            "comment": ""
+          },
+          {
+            "charId": null,
+            "comment": ""
+          },
+          {
+            "charId": null,
+            "comment": ""
+          },
+          {
+            "charId": null,
+            "comment": ""
+          },
+          {
+            "charId": null,
+            "comment": ""
+          }
+        ]
+      },
+      "r2": {
+        "headerImageUrl": null,
+        "memo": "",
+        "slots": [
+          {
+            "charId": null,
+            "comment": ""
+          },
+          {
+            "charId": null,
+            "comment": ""
+          },
+          {
+            "charId": null,
+            "comment": ""
+          },
+          {
+            "charId": null,
+            "comment": ""
+          },
+          {
+            "charId": null,
+            "comment": ""
+          }
+        ]
+      }
+    },
+    "boss_1777004233547": {
+      "r1": {
+        "headerImageUrl": null,
+        "memo": "",
+        "slots": [
+          {
+            "charId": null,
             "comment": ""
           },
           {
