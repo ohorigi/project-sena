@@ -488,5 +488,10 @@
     "id": "char_1777008089280",
     "name": "플라튼",
     "imageUrl": "https://raw.githubusercontent.com/ohorigi/project-sena/main/data/images/char_1777008087287.jpg?t=1777008089280"
+  },
+  {
+    "id": "char_1777008622405",
+    "name": "파이",
+    "imageUrl": "https://raw.githubusercontent.com/ohorigi/project-sena/main/data/images/char_1777008620666.jpg?t=1777008622405"
   }
 ]
