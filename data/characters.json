@@ -253,5 +253,10 @@
     "id": "char_1777007332171",
     "name": "아멜리아",
     "imageUrl": "https://raw.githubusercontent.com/ohorigi/project-sena/main/data/images/char_1777007330168.jpg?t=1777007332171"
+  },
+  {
+    "id": "char_1777007346687",
+    "name": "아수라",
+    "imageUrl": "https://raw.githubusercontent.com/ohorigi/project-sena/main/data/images/char_1777007345300.jpg?t=1777007346687"
   }
 ]
