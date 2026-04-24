@@ -789,7 +789,6 @@
   }
 
   .boss-card {
-    position: relative;
     background: var(--dark3);
     border: 1px solid var(--border);
     border-radius: 6px;
@@ -811,21 +810,6 @@
     color: var(--gold-light);
     background: rgba(201,168,76,0.08);
   }
-
-  .boss-card-overlay {
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0,0,0,0.75);
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    border-radius: 6px;
-  }
-  .boss-card:hover .boss-card-overlay,
-  .boss-card.overlay-active .boss-card-overlay { display: flex; }
 
   .add-boss-card {
     background: transparent;
@@ -850,13 +834,21 @@
   }
   .add-boss-card span { font-size: 11px; letter-spacing: 1px; }
 
-  /* 라운드 화살표 */
+  /* 라운드 화살표 - 3번째 슬롯 좌우 */
+  .round-nav-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 6px 0;
+    margin: 2px 0;
+  }
   .round-arrow {
     background: none;
     border: 1px solid var(--border);
     color: var(--gold);
     font-size: 14px;
-    width: 32px; height: 32px;
+    width: 36px; height: 36px;
     border-radius: 4px;
     cursor: pointer;
     display: flex;
@@ -864,11 +856,42 @@
     justify-content: center;
     transition: all 0.2s;
     flex-shrink: 0;
-    margin: 0 4px;
   }
   .round-arrow:hover {
     background: rgba(201,168,76,0.1);
     border-color: var(--gold);
+  }
+  .round-arrow.disabled {
+    opacity: 0.3;
+    cursor: default;
+  }
+  .round-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--gold-light);
+    letter-spacing: 2px;
+    min-width: 80px;
+    text-align: center;
+  }
+
+  /* 편집/삭제 모달 항목 */
+  .boss-editdel-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--dark3);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 10px 12px;
+  }
+  .boss-editdel-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .boss-editdel-btns {
+    display: flex;
+    gap: 8px;
   }
 
   /* Scrollbar */
@@ -1096,7 +1119,9 @@
   <div class="screen-header">
     <button class="back-btn" onclick="closeScreen('raid-screen')">‹</button>
     <div class="screen-title">🌟 강림원정대</div>
-    <button onclick="openBossAddModal('raid')" style="margin-left:auto;background:none;border:1px solid var(--border);border-radius:4px;color:var(--gold);font-size:12px;padding:6px 12px;cursor:pointer;letter-spacing:1px;">+ 보스 추가</button>
+    <div style="margin-left:auto;display:flex;gap:8px;">
+      <button onclick="openBossEditDeleteModal('raid')" style="background:none;border:1px solid var(--border);border-radius:4px;color:var(--text-dim);font-size:12px;padding:6px 10px;cursor:pointer;">편집/삭제</button>
+    </div>
   </div>
   <div class="screen-body">
     <div class="boss-grid" id="raid-boss-grid"></div>
@@ -1108,7 +1133,9 @@
   <div class="screen-header">
     <button class="back-btn" onclick="closeScreen('dest-screen')">‹</button>
     <div class="screen-title">💀 파괴신</div>
-    <button onclick="openBossAddModal('dest')" style="margin-left:auto;background:none;border:1px solid var(--border);border-radius:4px;color:var(--gold);font-size:12px;padding:6px 12px;cursor:pointer;letter-spacing:1px;">+ 보스 추가</button>
+    <div style="margin-left:auto;display:flex;gap:8px;">
+      <button onclick="openBossEditDeleteModal('dest')" style="background:none;border:1px solid var(--border);border-radius:4px;color:var(--text-dim);font-size:12px;padding:6px 10px;cursor:pointer;">편집/삭제</button>
+    </div>
   </div>
   <div class="screen-body">
     <div class="boss-grid" id="dest-boss-grid"></div>
@@ -1119,14 +1146,13 @@
 <div id="boss-screen" class="screen">
   <div class="screen-header">
     <button class="back-btn" id="boss-back-btn">‹</button>
-    <button class="round-arrow" onclick="prevRound()">◀</button>
     <div class="screen-title" id="boss-screen-title">연희 - 1라운드</div>
-    <button class="round-arrow" onclick="nextRound()">▶</button>
   </div>
   <div class="screen-body">
     <div class="day-banner-img" id="boss-banner-img" onclick="triggerBossBannerUpload()">
       <div class="banner-plus-hint">✚ <span>이미지 추가</span></div>
     </div>
+    <!-- 라운드 이동 화살표 (3번째 슬롯 좌우) -->
     <div class="char-slot-list" id="boss-slot-list"></div>
     <div class="day-bottom-memo">
       <label>✦ 스킬 순서</label>
@@ -1144,6 +1170,17 @@
     <div class="modal-btns">
       <button class="modal-btn cancel" onclick="closeBossModal()">취소</button>
       <button class="modal-btn confirm" onclick="saveBoss()">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== BOSS EDIT/DELETE MODAL ===== -->
+<div class="modal-bg" id="boss-editdel-modal-bg">
+  <div class="modal">
+    <h3 id="boss-editdel-title">보스 편집/삭제</h3>
+    <div id="boss-editdel-list" style="display:flex;flex-direction:column;gap:8px;max-height:50vh;overflow-y:auto;margin-bottom:14px;"></div>
+    <div class="modal-btns">
+      <button class="modal-btn cancel" onclick="document.getElementById('boss-editdel-modal-bg').classList.remove('active')">닫기</button>
     </div>
   </div>
 </div>
@@ -1477,12 +1514,7 @@ function renderBossGrid(mode) {
   (data.bosses || []).forEach(boss => {
     const card = document.createElement('div');
     card.className = 'boss-card';
-    card.innerHTML = `
-      <span>${boss.name}</span>
-      <div class="boss-card-overlay">
-        <button class="overlay-btn edit" onclick="editBoss('${mode}','${boss.id}');event.stopPropagation()">편집</button>
-        <button class="overlay-btn delete" onclick="deleteBoss('${mode}','${boss.id}');event.stopPropagation()">삭제</button>
-      </div>`;
+    card.textContent = boss.name;
     card.onclick = () => openBossScreen(mode, boss.id);
     grid.appendChild(card);
   });
@@ -1492,6 +1524,46 @@ function renderBossGrid(mode) {
   addCard.innerHTML = `<span>+</span><span>추가</span>`;
   addCard.onclick = () => openBossAddModal(mode);
   grid.appendChild(addCard);
+}
+
+function openBossEditDeleteModal(mode) {
+  const data = getDataByMode(mode);
+  const title = mode === 'raid' ? '강림원정대 보스 편집/삭제' : '파괴신 보스 편집/삭제';
+  document.getElementById('boss-editdel-title').textContent = title;
+  const list = document.getElementById('boss-editdel-list');
+  list.innerHTML = '';
+  if (!data.bosses || data.bosses.length === 0) {
+    list.innerHTML = '<div style="color:var(--text-dim);font-size:13px;text-align:center;padding:16px;">등록된 보스가 없습니다.</div>';
+  } else {
+    data.bosses.forEach(boss => {
+      const item = document.createElement('div');
+      item.className = 'boss-editdel-item';
+      item.innerHTML = `
+        <span class="boss-editdel-name">${boss.name}</span>
+        <div class="boss-editdel-btns">
+          <button class="overlay-btn edit" style="padding:6px 12px;font-size:12px;" onclick="editBossFromModal('${mode}','${boss.id}')">편집</button>
+          <button class="overlay-btn delete" style="padding:6px 12px;font-size:12px;" onclick="deleteBossFromModal('${mode}','${boss.id}')">삭제</button>
+        </div>`;
+      list.appendChild(item);
+    });
+  }
+  document.getElementById('boss-editdel-modal-bg').classList.add('active');
+}
+
+function editBossFromModal(mode, id) {
+  document.getElementById('boss-editdel-modal-bg').classList.remove('active');
+  editBoss(mode, id);
+}
+
+async function deleteBossFromModal(mode, id) {
+  if (!confirm('이 보스를 삭제하시겠습니까?')) return;
+  const data = getDataByMode(mode);
+  data.bosses = data.bosses.filter(b => b.id !== id);
+  delete data.bossData[id];
+  openBossEditDeleteModal(mode); // 목록 갱신
+  renderBossGrid(mode);
+  if (mode === 'raid') await saveRaidData();
+  else await saveDestData();
 }
 
 // ===== BOSS ADD/EDIT MODAL =====
@@ -1532,16 +1604,6 @@ async function saveBoss() {
   closeBossModal();
   renderBossGrid(editingBossMode);
   if (editingBossMode === 'raid') await saveRaidData();
-  else await saveDestData();
-}
-
-async function deleteBoss(mode, id) {
-  if (!confirm('이 보스를 삭제하시겠습니까?')) return;
-  const data = getDataByMode(mode);
-  data.bosses = data.bosses.filter(b => b.id !== id);
-  delete data.bossData[id];
-  renderBossGrid(mode);
-  if (mode === 'raid') await saveRaidData();
   else await saveDestData();
 }
 
@@ -1601,6 +1663,18 @@ function renderBossSlots() {
   list.innerHTML = '';
   const rd = getBossRoundData();
   rd.slots.forEach((slot, idx) => {
+    // 3번째 슬롯(idx=2) 앞에 라운드 이동 화살표 삽입
+    if (idx === 2) {
+      const navRow = document.createElement('div');
+      navRow.className = 'round-nav-row';
+      navRow.innerHTML = `
+        <button class="round-arrow ${currentRound === 1 ? 'disabled' : ''}" onclick="prevRound()">◀</button>
+        <span class="round-label">${currentRound}라운드</span>
+        <button class="round-arrow ${currentRound === 2 ? 'disabled' : ''}" onclick="nextRound()">▶</button>
+      `;
+      list.appendChild(navRow);
+    }
+
     const div = document.createElement('div');
     div.className = 'char-slot';
     const topRow = document.createElement('div');
