@@ -183,14 +183,14 @@
     "boss_1777000153963": {
       "r1": {
         "headerImageUrl": null,
-        "memo": "",
+        "memo": "sdds",
         "slots": [
           {
             "charId": "char_1777001637224",
-            "comment": ""
+            "comment": "klklkl"
           },
           {
-            "charId": null,
+            "charId": "char_1777001637224",
             "comment": ""
           },
           {
