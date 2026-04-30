@@ -83,7 +83,7 @@
   "thursday": {
     "headerImageUrl": "https://raw.githubusercontent.com/ohorigi/project-sena/main/data/images/header_thursday_1777016571545.jpg?t=1777016573395",
     "topImageUrl": null,
-    "memo": "타카1 라이언1 레첼2 비스킷1 라이언2 타카2 돼오1 타카1 라이언1 레첼2 타카2 라이언2 비스킷1 레첼1 라이언1 타카2 레첼2\n타카1 라이언2 타카2",
+    "memo": "타카1 라이언1 레첼2 비스킷1 라이언2 타카2 돼오1 타카1 라이언1 레첼2 타카2 라이언2 비스킷1 레첼1 라이언1 타카2 레첼2 타카1 라이언2 타카2",
     "slots": [
       {
         "charId": "char_1777001240768",
