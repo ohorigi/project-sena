@@ -498,5 +498,10 @@
     "id": "char_1777065569782",
     "name": "샤오",
     "imageUrl": "https://raw.githubusercontent.com/ohorigi/project-sena/main/data/images/char_1777065568047.jpg?t=1777065569782"
+  },
+  {
+    "id": "char_1778538261615",
+    "name": "오목",
+    "imageUrl": "https://raw.githubusercontent.com/ohorigi/project-sena/main/data/images/char_1778538259581.jpg?t=1778538261615"
   }
 ]
